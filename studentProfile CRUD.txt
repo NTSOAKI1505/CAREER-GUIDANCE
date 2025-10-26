@@ -1,0 +1,17 @@
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/student/profile -H "Content-Type: application/json" -d "{\"userId\":\"VytSCVhu0Btb3kUeHAYN\",\"institution\":\"National University of Lesotho\",\"course\":\"Computer Science\",\"yearOfStudy\":3,\"bio\":\"Aspiring AI Engineer\",\"skills\":[\"Python\",\"ML\",\"Data Science\"],\"resumeUrl\":\"https://example.com/resume.pdf\",\"profilePic\":\"https://example.com/profile.jpg\"}"
+{"status":"success","profile":{"id":"FOXCqWs49IEPd4ePqu6C","userId":"VytSCVhu0Btb3kUeHAYN","userInfo":{"firstName":"Lenong","lastName":"Lejone","email":"lenong@example.com","role":"student"},"institution":"National University of Lesotho","course":"Computer Science","yearOfStudy":3,"bio":"Aspiring AI Engineer","skills":["Python","ML","Data Science"],"resumeUrl":"https://example.com/resume.pdf","profilePic":"https://example.com/profile.jpg"}}
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/student/profile
+{"status":"success","profiles":[{"id":"FOXCqWs49IEPd4ePqu6C","userId":"VytSCVhu0Btb3kUeHAYN","userInfo":{"firstName":"Lenong","lastName":"Lejone","email":"lenong@example.com","role":"student"},"institution":"National University of Lesotho","course":"Computer Science","yearOfStudy":3,"bio":"Aspiring AI Engineer","skills":["Python","ML","Data Science"],"resumeUrl":"https://example.com/resume.pdf","profilePic":"https://example.com/profile.jpg","createdAt":{"_seconds":1761492992,"_nanoseconds":92000000},"editedAt":{"_seconds":1761492992,"_nanoseconds":92000000}}]}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/student/profile/FOXCqWs49IEPd4ePqu6C
+{"status":"success","profile":{"id":"FOXCqWs49IEPd4ePqu6C","userId":"VytSCVhu0Btb3kUeHAYN","userInfo":{"firstName":"Lenong","lastName":"Lejone","email":"lenong@example.com","role":"student"},"institution":"National University of Lesotho","course":"Computer Science","yearOfStudy":3,"bio":"Aspiring AI Engineer","skills":["Python","ML","Data Science"],"resumeUrl":"https://example.com/resume.pdf","profilePic":"https://example.com/profile.jpg","createdAt":{"_seconds":1761492992,"_nanoseconds":92000000},"editedAt":{"_seconds":1761492992,"_nanoseconds":92000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X PUT http://localhost:5000/api/student/profile/FOXCqWs49IEPd4ePqu6C -H "Content-Type: application/json" -d "{\"bio\":\"Updated bio\",\"skills\":[\"Python\",\"ML\",\"AI\"]}"
+{"status":"success","profile":{"id":"FOXCqWs49IEPd4ePqu6C","userId":"VytSCVhu0Btb3kUeHAYN","userInfo":{"firstName":"Lenong","lastName":"Lejone","email":"lenong@example.com","role":"student"},"institution":"National University of Lesotho","course":"Computer Science","yearOfStudy":3,"resumeUrl":"https://example.com/resume.pdf","profilePic":"https://example.com/profile.jpg","createdAt":{"_seconds":1761492992,"_nanoseconds":92000000},"skills":["Python","ML","AI"],"editedAt":{"_seconds":1761493068,"_nanoseconds":517000000},"bio":"Updated bio"}}
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X DELETE http://localhost:5000/api/student/profile/FOXCqWs49IEPd4ePqu6C
+{"status":"success","message":"Profile deleted successfully"}
+C:\Users\LENONG>
