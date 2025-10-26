@@ -1,0 +1,8 @@
+C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/auth/signup -H "Content-Type: application/json" -d "{\"firstName\":\"Bob\",\"lastName\":\"Brown\",\"email\":\"bob@gmail.com\",\"password\":\"123456\",\"passwordConfirm\":\"123456\",\"role\":\"student\"}"
+{"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IllKZnk1UnB2cENCQnB2RW5SZGFrIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjA4OTEzMDIsImV4cCI6MTc2MTQ5NjEwMn0.xTSzpNsQtfq1rjzfKA3bf7613lnr9mnl8d5-j_297sA","user":{"id":"YJfy5RpvpCBBpvEnRdak","firstName":"Bob","lastName":"Brown","email":"bob@gmail.com","role":"student"}}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"bob@gmail.com\",\"password\":\"123456\"}"
+{"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IllKZnk1UnB2cENCQnB2RW5SZGFrIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjA4OTEzMzgsImV4cCI6MTc2MTQ5NjEzOH0.-R8YLvxbMZKIqSqchjkrTps32v_sBw0-qRquMs7DYuI","user":{"id":"YJfy5RpvpCBBpvEnRdak","firstName":"Bob","lastName":"Brown","email":"bob@gmail.com","role":"student"}}
+C:\Users\SMART TECH HUB>

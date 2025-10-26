@@ -1,0 +1,87 @@
+CORE USERS
+
+1.system admin
+2.students
+3.intitutes
+4.companies
+1:M between Admin → Institute
+
+1:M between Admin → Company
+
+M:N between Institute ↔ Student
+
+M:N between Company ↔ Student
+
+🔹 1. Admin
+Main Table: admins
+institutions (created/approved by Admin)
+companies (approved/suspended by Admin)
+reports (system-wide logs/statistics)
+users (all registered accounts across roles)
+
+🔹 2. Institute
+
+Main Table: institutes
+faculties (each institute has many faculties)
+courses (under faculties)
+applications (student applications to courses in this institute)
+admissions (final admission results per student)
+profiles (institute’s details and updates)
+
+🔹 3. Student
+Main Table: students
+applications (applications to courses)
+admissions (results of applications)
+documents (transcripts, certificates, profile attachments)
+jobApplications (applications to job posts)
+profile (basic info: name, contact, school background, GPA)
+
+🔹 4. Company
+Main Table: companies
+jobs (posted job opportunities)
+jobApplications (students applying to these jobs)
+profiles (company details, contacts, industry, etc.)
+
+Admin
+ ├── Institutions
+ │     ├── Faculties
+ │     │     └── Courses
+ │     ├── Applications
+ │     └── Admissions
+ ├── Companies
+ │     ├── Jobs
+ │     │     └── JobApplications
+ │     └── Profiles
+ └── Reports
+
+Student
+ ├── Applications
+ ├── Admissions
+ ├── Documents
+ ├── JobApplications
+ └── Profile
+
+
+
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCS89054SzlMADSmKsAaWgulviTxwhkxr0",
+  authDomain: "career-guidance-platform-474a0.firebaseapp.com",
+  projectId: "career-guidance-platform-474a0",
+  storageBucket: "career-guidance-platform-474a0.firebasestorage.app",
+  messagingSenderId: "1083930928399",
+  appId: "1:1083930928399:web:3447aa1e587f84d889ca7a",
+  measurementId: "G-9DDL0GP1KY"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);

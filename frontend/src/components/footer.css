@@ -1,0 +1,43 @@
+/* Make the page layout flexible to push footer down */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure app content takes remaining space above footer */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content area should grow and push footer down */
+main {
+  flex: 1;
+}
+
+/* Footer styles with rich blue → rich gold gradient */
+.footer {
+  background: linear-gradient(90deg, #0a1f44, #1a3a6e, #ffd700); /* dark blue → mid blue → gold */
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.footer-links {
+  margin-top: 10px;
+}
+
+.footer-links a {
+  color: #ffd700; /* rich gold for links */
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}

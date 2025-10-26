@@ -1,0 +1,10 @@
+C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/users -H "Content-Type: application/json" -d "{\"firstName\":\"Bob\",\"lastName\":\"Brown\",\"email\":\"bob@gmail.com\",\"password\":\"123456\",\"passwordConfirm\":\"123456\",\"role\":\"student\"}"
+{"status":"success","user":{"id":"noPDLZ0A3bFnlD1vlPh4","firstName":"Bob","lastName":"Brown","email":"bob@gmail.com","role":"student"}}
+C:\Users\SMART TECH HUB>curl -X GET http://localhost:5000/api/users
+{"status":"success","users":[{"id":"noPDLZ0A3bFnlD1vlPh4","firstName":"Bob","lastName":"Brown","email":"bob@gmail.com","password":"$2b$12$8/KlgTI5TcCJOL/7iBP52uNNit6CFrwMLFp54RBSh6pFrWjIucj1m","role":"student","createdAt":{"_seconds":1760890934,"_nanoseconds":343000000}}]}
+C:\Users\SMART TECH HUB>curl -X PUT http://localhost:5000/api/users/noPDLZ0A3bFnlD1vlPh4 -H "Content-Type: application/json" -d "{\"firstName\":\"Bob\",\"lastName\":\"Green\",\"email\":\"bob@gmail.com\",\"role\":\"company\",\"password\":\"123456\",\"passwordConfirm\":\"123456\"}"
+{"status":"success","user":{"id":"noPDLZ0A3bFnlD1vlPh4","firstName":"Bob","email":"bob@gmail.com","createdAt":{"_seconds":1760890934,"_nanoseconds":343000000},"lastName":"Green","password":"$2b$12$BX9GXhCLVk1WpsrPFR4q6O1J6wpVUbnFkrd3n9rKSO3a3qJoVrfgq","role":"company","passwordConfirm":"123456"}}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X DELETE http://localhost:5000/api/users/noPDLZ0A3bFnlD1vlPh4
+{"status":"success","message":"User deleted successfully"}
+C:\Users\SMART TECH HUB>
