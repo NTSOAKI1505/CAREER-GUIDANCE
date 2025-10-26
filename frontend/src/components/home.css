@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #f9fafb; /* light gray background */
+  background-color: #fff8e7; /* light cream background */
   text-align: center;
   padding: 0 16px;
 }
@@ -28,6 +28,36 @@
 .home-header p {
   font-size: 1.125rem; /* text-lg */
   color: #4b5563; /* gray-600 */
+  margin-bottom: 20px; /* space before buttons */
+}
+
+/* Header buttons container */
+.header-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 40px; /* space before role cards */
+}
+
+/* General button styles */
+.btn {
+  padding: 10px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Login button - rich blue */
+.btn-login {
+  background: #ffdf33;
+}
+
+.btn-login:hover {
+  background: #ffdf33;
+  transform: scale(1.05);
 }
 
 /* Role grid */

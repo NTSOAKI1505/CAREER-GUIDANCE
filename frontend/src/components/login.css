@@ -1,0 +1,106 @@
+/* login.css */
+
+/* Container */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff8e7; /* light cream background */
+  padding: 20px;
+  text-align: center;
+}
+
+/* Header */
+.login-container h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  /* Gradient text: more blue than gold */
+  background: linear-gradient(
+    90deg,
+    #0a1f44 0%,
+    #0a1f44 70%,
+    #ffd700 85%,
+    #0a1f44 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Error message */
+.login-container .error {
+  color: #ff0000;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Form */
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 20px; /* rounded edges */
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Input fields */
+.login-container input {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px; /* rounded input */
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.login-container input:focus {
+  border-color: #0a1f44;
+  box-shadow: 0 0 8px rgba(10, 31, 68, 0.4); /* rich blue glow */
+}
+
+/* Submit button */
+.login-container button {
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px; /* rounded button */
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(
+    90deg,
+    #0a1f44 0%,
+    #ffd700 85%,
+    #0a1f44 100%
+  );
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-container button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5); /* gold glow */
+}
+
+/* Footer text */
+.login-container p {
+  margin-top: 15px;
+  color: #4b5563; /* gray text */
+}
+
+.login-container p a {
+  color: #0a1f44; /* rich blue link */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-container p a:hover {
+  color: #ffd700; /* rich gold on hover */
+}

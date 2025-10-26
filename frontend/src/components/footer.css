@@ -18,15 +18,19 @@ main {
   flex: 1;
 }
 
-/* Footer styles with rich blue → rich gold gradient */
+/* Footer styles with rich blue → rich gold gradient and rounded edges */
 .footer {
   background: linear-gradient(90deg, #0a1f44, #1a3a6e, #ffd700); /* dark blue → mid blue → gold */
   color: white;
   text-align: center;
   padding: 20px 0;
   margin-top: auto;
+  border-radius: 10px; /* rounded edges */
+  margin-left: 10px;   /* optional spacing so rounding is visible */
+  margin-right: 10px;  /* optional spacing so rounding is visible */
 }
 
+/* Footer links */
 .footer-links {
   margin-top: 10px;
 }
