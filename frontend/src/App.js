@@ -6,6 +6,7 @@ import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import Login from "./components/login";
 import Signup from "./components/signup";
+import StudentProfile from "./components/studentprofile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/studentprofile"  element={<StudentProfile />} />
         {/* Add other routes here (admin, student, institute, company) */}
       </Routes>
       <Footer />

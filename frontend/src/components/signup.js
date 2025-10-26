@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./signup.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; // Ensure this is set in .env
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -40,10 +40,20 @@ const Signup = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Signup failed");
 
+      // Save user and token
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      navigate("/"); // redirect after signup
+      // ✅ Redirect based on user role
+      if (data.user.role === "student") {
+        navigate("/studentprofile");
+      } else if (data.user.role === "institute") {
+        navigate("/instituteprofile");
+      } else if (data.user.role === "company") {
+        navigate("/companyprofile");
+      } else {
+        navigate("/"); // fallback
+      }
     } catch (err) {
       setError(err.message);
       console.error(err);

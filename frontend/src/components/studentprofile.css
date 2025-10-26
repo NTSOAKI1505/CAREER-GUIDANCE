@@ -1,0 +1,93 @@
+:root {
+  --rich-blue: #003366;
+  --rich-gold: #f1c232;
+}
+
+.profile-container {
+  background: var(--rich-blue);
+  color: white;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-container h1 {
+  text-align: center;
+  color: var(--rich-gold);
+  margin-bottom: 1rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.profile-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.profile-section h3 {
+  color: var(--rich-gold);
+  margin-bottom: 0.5rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button {
+  background-color: var(--rich-gold);
+  color: var(--rich-blue);
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #e6b800;
+}
+
+.success {
+  color: #a3ffb3;
+  text-align: center;
+}
+
+.error {
+  color: #ff8c8c;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  color: var(--rich-gold);
+  font-size: 1.2rem;
+}
+
+.profile-image {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-top: 10px;
+  border: 3px solid var(--rich-gold);
+}

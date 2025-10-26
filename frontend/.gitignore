@@ -12,6 +12,8 @@
 /build
 
 # misc
+# Directory for environment variables
+.env
 .DS_Store
 .env.local
 .env.development.local
