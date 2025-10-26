@@ -4,6 +4,7 @@ import cors from "cors";
 import { db } from "./config/db.js"; // Firestore connection
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import studentProfileRoutes from "./routes/studentProfileRoutes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/student/profile", studentProfileRoutes);
 
 // Test route
 app.get("/me", (req, res) => {
