@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css"; // reuse the same CSS
+import "./studentprofile.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,7 +18,7 @@ const InstitutionProfile = () => {
 
   const fetched = useRef(false);
 
-  // Fetch profile on mount
+  // Fetch profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
@@ -31,25 +31,11 @@ const InstitutionProfile = () => {
         const data = await res.json();
 
         if (res.ok && data.profile) {
-          const p = data.profile;
-          setProfile({
-            id: p.id,
-            userId: p.userId,
-            userInfo: p.userInfo,
-            institutionName: p.institutionName || "",
-            location: p.location || "",
-            type: p.type || "",
-            description: p.description || "",
-            website: p.website || "",
-            logoUrl: p.logoUrl || "",
-            contactEmail: p.contactEmail || p.userInfo?.email || "",
-            contactPhone: p.contactPhone || "",
-          });
-          setEditMode(false); // profile exists
+          setProfile(data.profile);
+          setEditMode(false);
         } else {
-          // No profile exists yet
           setProfile({
-            userId: user.id, // ensure userId is present
+            userId: user.id,
             userInfo: user,
             institutionName: "",
             location: "",
@@ -73,26 +59,14 @@ const InstitutionProfile = () => {
     fetchProfile();
   }, [token, user]);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
-
-    // Validate required fields
-    if (
-      !profile.institutionName.trim() ||
-      !profile.contactEmail.trim() ||
-      !profile.contactPhone.trim()
-    ) {
-      setError("Required fields are missing");
-      return;
-    }
 
     setMessage("");
     setError("");
@@ -111,22 +85,22 @@ const InstitutionProfile = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: profile.userId, // always send userId
-          institutionName: profile.institutionName.trim(),
-          location: profile.location.trim(),
-          type: profile.type.trim(),
-          description: profile.description.trim(),
-          website: profile.website.trim(),
-          logoUrl: profile.logoUrl.trim(),
-          contactEmail: profile.contactEmail.trim(),
-          contactPhone: profile.contactPhone.trim(),
+          userId: profile.userId,
+          institutionName: profile.institutionName,
+          location: profile.location,
+          type: profile.type,
+          description: profile.description,
+          website: profile.website,
+          logoUrl: profile.logoUrl,
+          contactEmail: profile.contactEmail,
+          contactPhone: profile.contactPhone,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
-      setProfile((prev) => ({ ...prev, ...data.profile }));
+      setProfile(data.profile);
       setMessage("✅ Profile saved successfully!");
       setEditMode(false);
     } catch (err) {
@@ -155,12 +129,9 @@ const InstitutionProfile = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form
-        onSubmit={handleSubmit}
-        className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
-      >
+      <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* Left Column: Logo + Contact */}
+          {/* Left Column: Info + Upload */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Institution Info</h3>
@@ -173,28 +144,25 @@ const InstitutionProfile = () => {
                 type="text"
                 name="institutionName"
                 placeholder="Name"
-                value={profile.institutionName}
+                value={profile.institutionName || ""}
                 onChange={handleChange}
                 disabled={!editMode}
-                required
               />
               <input
                 type="email"
                 name="contactEmail"
                 placeholder="Email"
-                value={profile.contactEmail}
+                value={profile.contactEmail || ""}
                 onChange={handleChange}
                 disabled={!editMode}
-                required
               />
               <input
                 type="text"
                 name="contactPhone"
                 placeholder="Phone"
-                value={profile.contactPhone}
+                value={profile.contactPhone || ""}
                 onChange={handleChange}
                 disabled={!editMode}
-                required
               />
             </div>
 
@@ -204,10 +172,11 @@ const InstitutionProfile = () => {
                 type="text"
                 name="logoUrl"
                 placeholder="Logo URL"
-                value={profile.logoUrl}
+                value={profile.logoUrl || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
+              {profile.logoUrl && <img src={profile.logoUrl} alt="Logo Preview" className="profile-image" />}
             </div>
           </div>
 
@@ -219,7 +188,7 @@ const InstitutionProfile = () => {
                 type="text"
                 name="location"
                 placeholder="Location"
-                value={profile.location}
+                value={profile.location || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -227,7 +196,7 @@ const InstitutionProfile = () => {
                 type="text"
                 name="type"
                 placeholder="Type (University, College, etc.)"
-                value={profile.type}
+                value={profile.type || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -235,14 +204,14 @@ const InstitutionProfile = () => {
                 type="text"
                 name="website"
                 placeholder="Website URL"
-                value={profile.website}
+                value={profile.website || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <textarea
                 name="description"
                 placeholder="Description"
-                value={profile.description}
+                value={profile.description || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -255,11 +224,7 @@ const InstitutionProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button
-              type="button"
-              onClick={handleUpdateLater}
-              className="later-btn"
-            >
+            <button type="button" onClick={handleUpdateLater} className="later-btn">
               Update Later
             </button>
           </div>

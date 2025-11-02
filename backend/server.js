@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import studentProfileRoutes from "./routes/studentProfileRoutes.js";
 import institutionProfileRoutes from "./routes/institutionProfileRoutes.js";
+import companyProfileRoutes from "./routes/companyProfileRoutes.js";
+import adminProfileRoutes from "./routes/adminProfileRoutes.js";
 
 const app = express();
 
@@ -18,6 +20,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/student/profile", studentProfileRoutes);
 app.use("/api/institution/profile", institutionProfileRoutes);
+app.use("/api/company/profile", companyProfileRoutes);
+app.use("/api/admin/profile", adminProfileRoutes);
+
 
 // Test route
 app.get("/me", (req, res) => {
