@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css"; // can reuse same CSS
+import "./studentprofile.css"; // reuse the same CSS
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,7 +18,7 @@ const InstitutionProfile = () => {
 
   const fetched = useRef(false);
 
-  // Fetch profile
+  // Fetch profile on mount
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
@@ -30,12 +30,26 @@ const InstitutionProfile = () => {
         });
         const data = await res.json();
 
-        if (res.ok && data.profiles && data.profiles.length > 0) {
-          setProfile(data.profiles[0]);
-          setEditMode(false);
-        } else {
+        if (res.ok && data.profile) {
+          const p = data.profile;
           setProfile({
-            userId: user.id,
+            id: p.id,
+            userId: p.userId,
+            userInfo: p.userInfo,
+            institutionName: p.institutionName || "",
+            location: p.location || "",
+            type: p.type || "",
+            description: p.description || "",
+            website: p.website || "",
+            logoUrl: p.logoUrl || "",
+            contactEmail: p.contactEmail || p.userInfo?.email || "",
+            contactPhone: p.contactPhone || "",
+          });
+          setEditMode(false); // profile exists
+        } else {
+          // No profile exists yet
+          setProfile({
+            userId: user.id, // ensure userId is present
             userInfo: user,
             institutionName: "",
             location: "",
@@ -43,7 +57,7 @@ const InstitutionProfile = () => {
             description: "",
             website: "",
             logoUrl: "",
-            contactEmail: "",
+            contactEmail: user.email || "",
             contactPhone: "",
           });
           setEditMode(true);
@@ -59,14 +73,26 @@ const InstitutionProfile = () => {
     fetchProfile();
   }, [token, user]);
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
+
+    // Validate required fields
+    if (
+      !profile.institutionName.trim() ||
+      !profile.contactEmail.trim() ||
+      !profile.contactPhone.trim()
+    ) {
+      setError("Required fields are missing");
+      return;
+    }
 
     setMessage("");
     setError("");
@@ -85,21 +111,22 @@ const InstitutionProfile = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          institutionName: profile.institutionName,
-          location: profile.location,
-          type: profile.type,
-          description: profile.description,
-          website: profile.website,
-          logoUrl: profile.logoUrl,
-          contactEmail: profile.contactEmail,
-          contactPhone: profile.contactPhone,
+          userId: profile.userId, // always send userId
+          institutionName: profile.institutionName.trim(),
+          location: profile.location.trim(),
+          type: profile.type.trim(),
+          description: profile.description.trim(),
+          website: profile.website.trim(),
+          logoUrl: profile.logoUrl.trim(),
+          contactEmail: profile.contactEmail.trim(),
+          contactPhone: profile.contactPhone.trim(),
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
-      setProfile(data.profile);
+      setProfile((prev) => ({ ...prev, ...data.profile }));
       setMessage("✅ Profile saved successfully!");
       setEditMode(false);
     } catch (err) {
@@ -133,7 +160,7 @@ const InstitutionProfile = () => {
         className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
       >
         <div className="profile-columns">
-          {/* Left Column: Info + Logo */}
+          {/* Left Column: Logo + Contact */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Institution Info</h3>
@@ -142,15 +169,45 @@ const InstitutionProfile = () => {
                 alt="Logo"
                 className="profile-image-large"
               />
-              <p>
-                <strong>Name:</strong> {profile.institutionName || "N/A"}
-              </p>
-              <p>
-                <strong>Location:</strong> {profile.location || "N/A"}
-              </p>
-              <p>
-                <strong>Type:</strong> {profile.type || "N/A"}
-              </p>
+              <input
+                type="text"
+                name="institutionName"
+                placeholder="Name"
+                value={profile.institutionName}
+                onChange={handleChange}
+                disabled={!editMode}
+                required
+              />
+              <input
+                type="email"
+                name="contactEmail"
+                placeholder="Email"
+                value={profile.contactEmail}
+                onChange={handleChange}
+                disabled={!editMode}
+                required
+              />
+              <input
+                type="text"
+                name="contactPhone"
+                placeholder="Phone"
+                value={profile.contactPhone}
+                onChange={handleChange}
+                disabled={!editMode}
+                required
+              />
+            </div>
+
+            <div className="profile-card">
+              <h3>Uploads</h3>
+              <input
+                type="text"
+                name="logoUrl"
+                placeholder="Logo URL"
+                value={profile.logoUrl}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
             </div>
           </div>
 
@@ -160,17 +217,9 @@ const InstitutionProfile = () => {
               <h3>Details</h3>
               <input
                 type="text"
-                name="institutionName"
-                placeholder="Institution Name"
-                value={profile.institutionName || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
                 name="location"
                 placeholder="Location"
-                value={profile.location || ""}
+                value={profile.location}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -178,7 +227,7 @@ const InstitutionProfile = () => {
                 type="text"
                 name="type"
                 placeholder="Type (University, College, etc.)"
-                value={profile.type || ""}
+                value={profile.type}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -186,30 +235,14 @@ const InstitutionProfile = () => {
                 type="text"
                 name="website"
                 placeholder="Website URL"
-                value={profile.website || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactEmail"
-                placeholder="Contact Email"
-                value={profile.contactEmail || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactPhone"
-                placeholder="Contact Phone"
-                value={profile.contactPhone || ""}
+                value={profile.website}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <textarea
                 name="description"
-                placeholder="Short description..."
-                value={profile.description || ""}
+                placeholder="Description"
+                value={profile.description}
                 onChange={handleChange}
                 disabled={!editMode}
               />
