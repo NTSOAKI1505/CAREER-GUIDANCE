@@ -1,4 +1,4 @@
-// src/components/StudentProfile.js
+// src/components/CompanyProfile.js
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
@@ -6,7 +6,7 @@ import "./studentprofile.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const StudentProfile = () => {
+const CompanyProfile = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -16,41 +16,41 @@ const StudentProfile = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [editMode, setEditMode] = useState(true);
-
   const fetched = useRef(false);
 
-  // Fetch profile
+  // Fetch company profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/student/profile/me`, {
+        const res = await fetch(`${BACKEND_URL}/company/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
         if (res.ok && data.profiles && data.profiles.length > 0) {
           setProfile(data.profiles[0]);
-          setEditMode(false); // profile exists
+          setEditMode(false);
         } else {
           setProfile({
             userId: user.id,
             userInfo: user,
-            institution: "",
-            course: "",
-            yearOfStudy: "",
-            bio: "",
-            skills: [],
-            resumeUrl: "",
-            profilePic: "",
+            companyName: user.firstName || "",
+            location: "",
+            industry: "",
+            description: "",
+            website: "",
+            logoUrl: "",
+            contactEmail: user.email || "",
+            contactPhone: "",
           });
           setEditMode(true);
         }
       } catch (err) {
-        console.error(err);
-        setError("Failed to load profile");
+        console.error("Error fetching profile:", err);
+        setError("Failed to load company profile");
       } finally {
         setLoading(false);
       }
@@ -59,27 +59,19 @@ const StudentProfile = () => {
     fetchProfile();
   }, [token, user]);
 
-  // Input change handlers
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSkillsChange = (e) => {
-    const value = e.target.value;
-    setProfile((prev) => ({
-      ...prev,
-      skills: value.split(",").map((s) => s.trim()).filter(Boolean),
-    }));
-  };
-
-  // Submit profile
+  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
 
-    if (!profile.institution || !profile.course || !profile.yearOfStudy) {
-      setError("Institution, course, and year of study are required.");
+    if (!profile.companyName || !profile.contactEmail || !profile.contactPhone) {
+      setError("Company name, email, and phone are required.");
       return;
     }
 
@@ -89,8 +81,8 @@ const StudentProfile = () => {
 
     try {
       const url = profile.id
-        ? `${BACKEND_URL}/student/profile/${profile.id}`
-        : `${BACKEND_URL}/student/profile`;
+        ? `${BACKEND_URL}/company/profile/${profile.id}`
+        : `${BACKEND_URL}/company/profile`;
       const method = profile.id ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -101,13 +93,14 @@ const StudentProfile = () => {
         },
         body: JSON.stringify({
           userId: profile.userId,
-          institution: profile.institution,
-          course: profile.course,
-          yearOfStudy: Number(profile.yearOfStudy),
-          bio: profile.bio,
-          skills: profile.skills,
-          resumeUrl: profile.resumeUrl,
-          profilePic: profile.profilePic,
+          companyName: profile.companyName,
+          location: profile.location,
+          industry: profile.industry,
+          description: profile.description,
+          website: profile.website,
+          logoUrl: profile.logoUrl,
+          contactEmail: profile.contactEmail,
+          contactPhone: profile.contactPhone,
         }),
       });
 
@@ -115,7 +108,7 @@ const StudentProfile = () => {
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
       setProfile(data.profile);
-      setMessage("✅ Profile saved successfully!");
+      setMessage("✅ Company profile saved successfully!");
       setEditMode(false);
     } catch (err) {
       setError(err.message);
@@ -126,22 +119,22 @@ const StudentProfile = () => {
 
   const handleUpdateLater = () => navigate("/");
 
-  // Animated loader while fetching
+  // Loader while fetching
   if (loading) {
     return (
       <div className="loader-wrapper">
         <div className="spinner"></div>
-        <p>Loading Student Profile...</p>
+        <p>Loading Company Profile...</p>
       </div>
     );
   }
 
-  if (!profile) return <div className="error">Profile not found</div>;
+  if (!profile) return <div className="error">Company profile not found</div>;
 
   return (
     <div className="profile-wrapper">
       <div className="profile-header">
-        <h1>Student Profile</h1>
+        <h1>Company Profile</h1>
         {!editMode && (
           <div className="profile-actions-view">
             <button className="edit-btn" onClick={() => setEditMode(true)}>
@@ -162,85 +155,86 @@ const StudentProfile = () => {
         className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
       >
         <div className="profile-columns">
-          {/* Left Column */}
+          {/* LEFT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Personal Info</h3>
+              <h3>Company Info</h3>
               <img
-                src={profile.profilePic || "https://via.placeholder.com/150"}
-                alt="Profile"
+                src={profile.logoUrl || "https://via.placeholder.com/150"}
+                alt="Company Logo"
                 className="profile-image-large"
               />
-              <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Company:</strong> {profile.companyName || "Not specified"}</p>
+              <p><strong>Email:</strong> {profile.contactEmail || "N/A"}</p>
+              <p><strong>Phone:</strong> {profile.contactPhone || "N/A"}</p>
             </div>
 
             <div className="profile-card">
               <h3>Uploads</h3>
               <input
                 type="text"
-                name="resumeUrl"
-                placeholder="Resume URL"
-                value={profile.resumeUrl || ""}
+                name="logoUrl"
+                placeholder="Company Logo URL"
+                value={profile.logoUrl || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
                 type="text"
-                name="profilePic"
-                placeholder="Profile Picture URL"
-                value={profile.profilePic || ""}
+                name="website"
+                placeholder="Company Website"
+                value={profile.website || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
             </div>
           </div>
 
-          {/* Right Column */}
+          {/* RIGHT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Education</h3>
+              <h3>Company Details</h3>
               <input
                 type="text"
-                name="institution"
-                placeholder="Institution"
-                value={profile.institution || ""}
+                name="companyName"
+                placeholder="Company Name"
+                value={profile.companyName || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
                 type="text"
-                name="course"
-                placeholder="Course"
-                value={profile.course || ""}
+                name="contactPhone"
+                placeholder="Contact Phone"
+                value={profile.contactPhone || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
-                type="number"
-                name="yearOfStudy"
-                placeholder="Year of Study"
-                value={profile.yearOfStudy || ""}
+                type="text"
+                name="location"
+                placeholder="Location"
+                value={profile.location || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
+              <input
+                type="text"
+                name="industry"
+                placeholder="Industry"
+                value={profile.industry || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
             </div>
 
             <div className="profile-card">
-              <h3>About You</h3>
+              <h3>About the Company</h3>
               <textarea
-                name="bio"
-                placeholder="Short bio..."
-                value={profile.bio || ""}
+                name="description"
+                placeholder="Describe your company..."
+                value={profile.description || ""}
                 onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="skills"
-                placeholder="Skills (comma separated)"
-                value={profile.skills?.join(", ") || ""}
-                onChange={handleSkillsChange}
                 disabled={!editMode}
               />
             </div>
@@ -252,7 +246,11 @@ const StudentProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={handleUpdateLater} className="later-btn">
+            <button
+              type="button"
+              onClick={handleUpdateLater}
+              className="later-btn"
+            >
               Cancel
             </button>
           </div>
@@ -262,4 +260,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default CompanyProfile;

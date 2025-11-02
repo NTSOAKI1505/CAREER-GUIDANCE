@@ -19,15 +19,15 @@ function Navbar() {
     navigate("/login");
   };
 
-  // Fetch profile pic based on role
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfilePic = async () => {
       if (!token || !user) return;
 
       let endpoint = "";
       if (user.role === "student") endpoint = "/student/profile/me";
       else if (user.role === "institution") endpoint = "/institution/profile/me";
       else if (user.role === "company") endpoint = "/company/profile/me";
+      else if (user.role === "admin") endpoint = "/admin/profile/me";
 
       if (!endpoint) return;
 
@@ -36,19 +36,23 @@ function Navbar() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        if (res.ok && data.profiles && data.profiles.length > 0) {
-          setProfilePic(
-            user.role === "student"
-              ? data.profiles[0].profilePic || null
-              : data.profiles[0].logoUrl || null // institution/company logo
-          );
+
+        if (res.ok) {
+          let profileData = data.profiles?.[0] || null;
+          if (profileData) {
+            let pic = null;
+            if (user.role === "student" || user.role === "admin") pic = profileData.profilePic || null;
+            else pic = profileData.logoUrl || null;
+
+            setProfilePic(pic);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch profile pic:", err);
       }
     };
 
-    fetchProfile();
+    fetchProfilePic();
   }, [token, user]);
 
   if (loading) return <div className="navbar">Loading...</div>;
@@ -65,6 +69,17 @@ function Navbar() {
           <button onClick={() => navigate("/")}>Home</button>
         </li>
       </ul>
+      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        <li>
+          <button onClick={() => navigate("/")}>Institutions</button>
+        </li>
+      </ul>
+      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        <li>
+          <button onClick={() => navigate("/")}>companies</button>
+        </li>
+      </ul>
+      
 
       <div className="navbar-user">
         {user ? (
@@ -74,19 +89,17 @@ function Navbar() {
             ) : (
               <div className="avatar">{user.firstName?.charAt(0)?.toUpperCase()}</div>
             )}
-            <span>{user.firstName}</span>
+            <div className="user-info">
+              <span className="user-name">{user.firstName} {user.lastName}</span>
+              <span className="user-role">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+            </div>
             {profileOpen && (
               <div className="dropdown">
                 {/* Redirect based on role */}
-                {user.role === "student" && (
-                  <button onClick={() => navigate("/studentprofile")}>Profile</button>
-                )}
-                {user.role === "institution" && (
-                  <button onClick={() => navigate("/institutionprofile")}>Profile</button>
-                )}
-                {user.role === "company" && (
-                  <button onClick={() => navigate("/companyprofile")}>Profile</button>
-                )}
+                {user.role === "student" && <button onClick={() => navigate("/studentprofile")}>Profile</button>}
+                {user.role === "institution" && <button onClick={() => navigate("/institutionprofile")}>Profile</button>}
+                {user.role === "company" && <button onClick={() => navigate("/companyprofile")}>Profile</button>}
+                {user.role === "admin" && <button onClick={() => navigate("/adminprofile")}>Profile</button>}
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}
@@ -94,7 +107,6 @@ function Navbar() {
         ) : (
           <div className="auth-buttons">
             <button onClick={() => navigate("/login")}>Login</button>
-            <button onClick={() => navigate("/signup")}>Signup</button>
           </div>
         )}
         <button className="menu-toggle" onClick={toggleMenu}>☰</button>

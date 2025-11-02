@@ -1,12 +1,12 @@
-// src/components/StudentProfile.js
+// src/components/AdminProfile.js
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css";
+import "./studentprofile.css"; // keep your existing styles
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const StudentProfile = () => {
+const AdminProfile = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -16,41 +16,40 @@ const StudentProfile = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [editMode, setEditMode] = useState(true);
-
   const fetched = useRef(false);
 
-  // Fetch profile
+  // Fetch admin profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/student/profile/me`, {
+        const res = await fetch(`${BACKEND_URL}/admin/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
         if (res.ok && data.profiles && data.profiles.length > 0) {
           setProfile(data.profiles[0]);
-          setEditMode(false); // profile exists
+          setEditMode(false);
         } else {
+          // initialize new profile
           setProfile({
             userId: user.id,
             userInfo: user,
-            institution: "",
-            course: "",
-            yearOfStudy: "",
+            department: "",
+            roleInAdmin: "",
             bio: "",
-            skills: [],
-            resumeUrl: "",
+            contactEmail: user.email || "",
+            contactPhone: "",
             profilePic: "",
           });
           setEditMode(true);
         }
       } catch (err) {
         console.error(err);
-        setError("Failed to load profile");
+        setError("Failed to load admin profile");
       } finally {
         setLoading(false);
       }
@@ -59,27 +58,19 @@ const StudentProfile = () => {
     fetchProfile();
   }, [token, user]);
 
-  // Input change handlers
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSkillsChange = (e) => {
-    const value = e.target.value;
-    setProfile((prev) => ({
-      ...prev,
-      skills: value.split(",").map((s) => s.trim()).filter(Boolean),
-    }));
-  };
-
-  // Submit profile
+  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
 
-    if (!profile.institution || !profile.course || !profile.yearOfStudy) {
-      setError("Institution, course, and year of study are required.");
+    if (!profile.department || !profile.roleInAdmin || !profile.contactEmail || !profile.contactPhone) {
+      setError("Department, role, email, and phone are required.");
       return;
     }
 
@@ -89,8 +80,8 @@ const StudentProfile = () => {
 
     try {
       const url = profile.id
-        ? `${BACKEND_URL}/student/profile/${profile.id}`
-        : `${BACKEND_URL}/student/profile`;
+        ? `${BACKEND_URL}/admin/profile/${profile.id}`
+        : `${BACKEND_URL}/admin/profile`;
       const method = profile.id ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -101,12 +92,11 @@ const StudentProfile = () => {
         },
         body: JSON.stringify({
           userId: profile.userId,
-          institution: profile.institution,
-          course: profile.course,
-          yearOfStudy: Number(profile.yearOfStudy),
+          department: profile.department,
+          roleInAdmin: profile.roleInAdmin,
           bio: profile.bio,
-          skills: profile.skills,
-          resumeUrl: profile.resumeUrl,
+          contactEmail: profile.contactEmail,
+          contactPhone: profile.contactPhone,
           profilePic: profile.profilePic,
         }),
       });
@@ -115,7 +105,7 @@ const StudentProfile = () => {
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
       setProfile(data.profile);
-      setMessage("✅ Profile saved successfully!");
+      setMessage("✅ Admin profile saved successfully!");
       setEditMode(false);
     } catch (err) {
       setError(err.message);
@@ -126,22 +116,22 @@ const StudentProfile = () => {
 
   const handleUpdateLater = () => navigate("/");
 
-  // Animated loader while fetching
+  // Loader while profile is fetching
   if (loading) {
     return (
       <div className="loader-wrapper">
         <div className="spinner"></div>
-        <p>Loading Student Profile...</p>
+        <p>Loading Admin Profile...</p>
       </div>
     );
   }
 
-  if (!profile) return <div className="error">Profile not found</div>;
+  if (!profile) return <div className="error">Admin profile not found</div>;
 
   return (
     <div className="profile-wrapper">
       <div className="profile-header">
-        <h1>Student Profile</h1>
+        <h1>Admin Profile</h1>
         {!editMode && (
           <div className="profile-actions-view">
             <button className="edit-btn" onClick={() => setEditMode(true)}>
@@ -162,29 +152,23 @@ const StudentProfile = () => {
         className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
       >
         <div className="profile-columns">
-          {/* Left Column */}
+          {/* LEFT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Personal Info</h3>
+              <h3>Admin Info</h3>
               <img
                 src={profile.profilePic || "https://via.placeholder.com/150"}
-                alt="Profile"
+                alt="Profile Pic"
                 className="profile-image-large"
               />
-              <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Department:</strong> {profile.department || "N/A"}</p>
+              <p><strong>Role:</strong> {profile.roleInAdmin || "N/A"}</p>
+              <p><strong>Email:</strong> {profile.contactEmail || "N/A"}</p>
+              <p><strong>Phone:</strong> {profile.contactPhone || "N/A"}</p>
             </div>
 
             <div className="profile-card">
               <h3>Uploads</h3>
-              <input
-                type="text"
-                name="resumeUrl"
-                placeholder="Resume URL"
-                value={profile.resumeUrl || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
               <input
                 type="text"
                 name="profilePic"
@@ -196,51 +180,51 @@ const StudentProfile = () => {
             </div>
           </div>
 
-          {/* Right Column */}
+          {/* RIGHT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Education</h3>
+              <h3>Details</h3>
               <input
                 type="text"
-                name="institution"
-                placeholder="Institution"
-                value={profile.institution || ""}
+                name="department"
+                placeholder="Department"
+                value={profile.department || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
                 type="text"
-                name="course"
-                placeholder="Course"
-                value={profile.course || ""}
+                name="roleInAdmin"
+                placeholder="Role in Admin"
+                value={profile.roleInAdmin || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
-                type="number"
-                name="yearOfStudy"
-                placeholder="Year of Study"
-                value={profile.yearOfStudy || ""}
+                type="text"
+                name="contactPhone"
+                placeholder="Contact Phone"
+                value={profile.contactPhone || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
+              <input
+                type="text"
+                name="contactEmail"
+                placeholder="Email"
+                value={profile.contactEmail || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
             </div>
 
             <div className="profile-card">
-              <h3>About You</h3>
+              <h3>Bio</h3>
               <textarea
                 name="bio"
-                placeholder="Short bio..."
+                placeholder="Write about yourself..."
                 value={profile.bio || ""}
                 onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="skills"
-                placeholder="Skills (comma separated)"
-                value={profile.skills?.join(", ") || ""}
-                onChange={handleSkillsChange}
                 disabled={!editMode}
               />
             </div>
@@ -262,4 +246,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default AdminProfile;

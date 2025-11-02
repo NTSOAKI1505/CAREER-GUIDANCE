@@ -223,3 +223,56 @@
   background-color: var(--rich-gold);
   color: var(--rich-blue);
 }
+/* User info next to avatar */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+  line-height: 1.1;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Adjust profile container to align items properly */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  transition: 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Make sure avatar and user-info stay aligned */
+.avatar, .avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--rich-gold);
+  flex-shrink: 0;
+}
+
+/* Slight hover effect for profile section */
+.profile:hover {
+  background-color: rgba(255, 194, 50, 0.2);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .user-info {
+    display: none; /* hide text on mobile to save space */
+  }
+}
+

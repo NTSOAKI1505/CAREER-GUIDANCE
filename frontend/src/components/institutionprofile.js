@@ -9,6 +9,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const InstitutionProfile = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
+
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -29,10 +30,24 @@ const InstitutionProfile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
+        console.log("Institution profile response:", data);
 
-        if (res.ok && data.profile) {
-          setProfile(data.profile);
-          setEditMode(false);
+        if (res.ok && data.profiles && data.profiles.length > 0) {
+          const p = data.profiles[0];
+          setProfile({
+            id: p.id || "",
+            userId: p.userId || user.id,
+            userInfo: user,
+            institutionName: p.institutionName || "",
+            location: p.location || "",
+            type: p.type || "",
+            description: p.description || "",
+            website: p.website || "",
+            logoUrl: p.logoUrl || "",
+            contactEmail: p.contactEmail || user.email || "",
+            contactPhone: p.contactPhone || "",
+          });
+          setEditMode(false); // existing profile → view mode
         } else {
           setProfile({
             userId: user.id,
@@ -46,7 +61,7 @@ const InstitutionProfile = () => {
             contactEmail: user.email || "",
             contactPhone: "",
           });
-          setEditMode(true);
+          setEditMode(true); // new profile → edit mode
         }
       } catch (err) {
         console.error(err);
@@ -68,9 +83,14 @@ const InstitutionProfile = () => {
     e.preventDefault();
     if (!profile) return;
 
+    if (!profile.institutionName || !profile.contactEmail || !profile.contactPhone) {
+      setError("Institution name, email, and phone are required.");
+      return;
+    }
+
+    setSaving(true);
     setMessage("");
     setError("");
-    setSaving(true);
 
     try {
       const url = profile.id
@@ -100,7 +120,10 @@ const InstitutionProfile = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
-      setProfile(data.profile);
+      setProfile({
+        id: data.profile.id || profile.id,
+        ...profile,
+      });
       setMessage("✅ Profile saved successfully!");
       setEditMode(false);
     } catch (err) {
@@ -112,7 +135,15 @@ const InstitutionProfile = () => {
 
   const handleUpdateLater = () => navigate("/");
 
-  if (loading) return <div className="loading">Loading profile...</div>;
+  if (loading) {
+    return (
+      <div className="loader-wrapper">
+        <div className="spinner"></div>
+        <p>Loading Institution Profile...</p>
+      </div>
+    );
+  }
+
   if (!profile) return <div className="error">Profile not found</div>;
 
   return (
@@ -120,9 +151,10 @@ const InstitutionProfile = () => {
       <div className="profile-header">
         <h1>Institution Profile</h1>
         {!editMode && (
-          <button className="edit-btn" onClick={() => setEditMode(true)}>
-            Edit Profile
-          </button>
+          <div className="profile-actions-view">
+            <button className="edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+            <button className="later-btn" onClick={() => navigate("/")}>Cancel</button>
+          </div>
         )}
       </div>
 
@@ -131,7 +163,7 @@ const InstitutionProfile = () => {
 
       <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* Left Column: Info + Upload */}
+          {/* Left Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Institution Info</h3>
@@ -143,7 +175,7 @@ const InstitutionProfile = () => {
               <input
                 type="text"
                 name="institutionName"
-                placeholder="Name"
+                placeholder="Institution Name"
                 value={profile.institutionName || ""}
                 onChange={handleChange}
                 disabled={!editMode}
@@ -180,7 +212,7 @@ const InstitutionProfile = () => {
             </div>
           </div>
 
-          {/* Right Column: Details */}
+          {/* Right Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Details</h3>
@@ -225,7 +257,7 @@ const InstitutionProfile = () => {
               {saving ? "Saving..." : "Save Changes"}
             </button>
             <button type="button" onClick={handleUpdateLater} className="later-btn">
-              Update Later
+              Cancel
             </button>
           </div>
         )}

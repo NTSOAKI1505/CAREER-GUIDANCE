@@ -8,7 +8,9 @@ import Login from "./components/login";
 import Signup from "./components/signup";
 import StudentProfile from "./components/studentprofile";
 import InstitutionProfile from "./components/institutionprofile";
-import { UserProvider } from "./contexts/UserContext"; // <-- import UserProvider
+import CompanyProfile from "./components/companyprofile";
+import AdminProfile from "./components/adminprofile";
+import { UserProvider } from "./contexts/UserContext"; 
 
 function App() {
   return (
@@ -20,7 +22,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/studentprofile" element={<StudentProfile />} />
-           <Route path="/institutionprofile" element={<InstitutionProfile />} />
+          <Route path="/institutionprofile" element={<InstitutionProfile />} />
+          <Route path="/companyprofile" element={<CompanyProfile />} />
+          <Route path="/adminprofile" element={<AdminProfile />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
         <Footer />
