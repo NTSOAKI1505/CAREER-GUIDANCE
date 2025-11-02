@@ -7,20 +7,25 @@ import Footer from "./components/footer";
 import Login from "./components/login";
 import Signup from "./components/signup";
 import StudentProfile from "./components/studentprofile";
+import InstitutionProfile from "./components/institutionprofile";
+import { UserProvider } from "./contexts/UserContext"; // <-- import UserProvider
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/studentprofile"  element={<StudentProfile />} />
-        {/* Add other routes here (admin, student, institute, company) */}
-      </Routes>
-      <Footer />
-    </Router>
+    <UserProvider> {/* Wrap the entire app */}
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/studentprofile" element={<StudentProfile />} />
+           <Route path="/institutionprofile" element={<InstitutionProfile />} />
+          {/* Add other routes here (admin, student, institute, company) */}
+        </Routes>
+        <Footer />
+      </Router>
+    </UserProvider>
   );
 }
 

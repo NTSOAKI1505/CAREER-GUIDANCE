@@ -1,12 +1,12 @@
-// src/components/StudentProfile.js
+// src/components/InstitutionProfile.js
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css";
+import "./studentprofile.css"; // can reuse same CSS
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const StudentProfile = () => {
+const InstitutionProfile = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
@@ -25,25 +25,26 @@ const StudentProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/student/profile/me`, {
+        const res = await fetch(`${BACKEND_URL}/institution/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
         if (res.ok && data.profiles && data.profiles.length > 0) {
           setProfile(data.profiles[0]);
-          setEditMode(false); // profile exists, view mode
+          setEditMode(false);
         } else {
           setProfile({
             userId: user.id,
             userInfo: user,
-            institution: "",
-            course: "",
-            yearOfStudy: "",
-            bio: "",
-            skills: [],
-            resumeUrl: "",
-            profilePic: "",
+            institutionName: "",
+            location: "",
+            type: "",
+            description: "",
+            website: "",
+            logoUrl: "",
+            contactEmail: "",
+            contactPhone: "",
           });
           setEditMode(true);
         }
@@ -58,21 +59,11 @@ const StudentProfile = () => {
     fetchProfile();
   }, [token, user]);
 
-  // Input handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSkillsChange = (e) => {
-    const value = e.target.value;
-    setProfile((prev) => ({
-      ...prev,
-      skills: value.split(",").map((s) => s.trim()).filter(Boolean),
-    }));
-  };
-
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
@@ -83,8 +74,8 @@ const StudentProfile = () => {
 
     try {
       const url = profile.id
-        ? `${BACKEND_URL}/student/profile/${profile.id}`
-        : `${BACKEND_URL}/student/profile`;
+        ? `${BACKEND_URL}/institution/profile/${profile.id}`
+        : `${BACKEND_URL}/institution/profile`;
       const method = profile.id ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -94,13 +85,14 @@ const StudentProfile = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          institution: profile.institution,
-          course: profile.course,
-          yearOfStudy: Number(profile.yearOfStudy),
-          bio: profile.bio,
-          skills: profile.skills,
-          resumeUrl: profile.resumeUrl,
-          profilePic: profile.profilePic,
+          institutionName: profile.institutionName,
+          location: profile.location,
+          type: profile.type,
+          description: profile.description,
+          website: profile.website,
+          logoUrl: profile.logoUrl,
+          contactEmail: profile.contactEmail,
+          contactPhone: profile.contactPhone,
         }),
       });
 
@@ -125,7 +117,7 @@ const StudentProfile = () => {
   return (
     <div className="profile-wrapper">
       <div className="profile-header">
-        <h1>Student Profile</h1>
+        <h1>Institution Profile</h1>
         {!editMode && (
           <button className="edit-btn" onClick={() => setEditMode(true)}>
             Edit Profile
@@ -136,87 +128,89 @@ const StudentProfile = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
+      <form
+        onSubmit={handleSubmit}
+        className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
+      >
         <div className="profile-columns">
-          {/* Left Column: Personal + Uploads */}
+          {/* Left Column: Info + Logo */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Personal Info</h3>
+              <h3>Institution Info</h3>
               <img
-                src={profile.profilePic || "https://via.placeholder.com/150"}
-                alt="Profile"
+                src={profile.logoUrl || "https://via.placeholder.com/150"}
+                alt="Logo"
                 className="profile-image-large"
               />
-              <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-            </div>
-
-            <div className="profile-card">
-              <h3>Uploads</h3>
-              <input
-                type="text"
-                name="resumeUrl"
-                placeholder="Resume URL"
-                value={profile.resumeUrl || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="profilePic"
-                placeholder="Profile Picture URL"
-                value={profile.profilePic || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              <p>
+                <strong>Name:</strong> {profile.institutionName || "N/A"}
+              </p>
+              <p>
+                <strong>Location:</strong> {profile.location || "N/A"}
+              </p>
+              <p>
+                <strong>Type:</strong> {profile.type || "N/A"}
+              </p>
             </div>
           </div>
 
-          {/* Right Column: Education + About */}
+          {/* Right Column: Details */}
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Education</h3>
+              <h3>Details</h3>
               <input
                 type="text"
-                name="institution"
-                placeholder="Institution"
-                value={profile.institution || ""}
+                name="institutionName"
+                placeholder="Institution Name"
+                value={profile.institutionName || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
                 type="text"
-                name="course"
-                placeholder="Course"
-                value={profile.course || ""}
+                name="location"
+                placeholder="Location"
+                value={profile.location || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
               <input
-                type="number"
-                name="yearOfStudy"
-                placeholder="Year of Study"
-                value={profile.yearOfStudy || ""}
+                type="text"
+                name="type"
+                placeholder="Type (University, College, etc.)"
+                value={profile.type || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
-            </div>
-
-            <div className="profile-card">
-              <h3>About You</h3>
+              <input
+                type="text"
+                name="website"
+                placeholder="Website URL"
+                value={profile.website || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
+              <input
+                type="text"
+                name="contactEmail"
+                placeholder="Contact Email"
+                value={profile.contactEmail || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
+              <input
+                type="text"
+                name="contactPhone"
+                placeholder="Contact Phone"
+                value={profile.contactPhone || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
               <textarea
-                name="bio"
-                placeholder="Short bio..."
-                value={profile.bio || ""}
+                name="description"
+                placeholder="Short description..."
+                value={profile.description || ""}
                 onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="skills"
-                placeholder="Skills (comma separated)"
-                value={profile.skills?.join(", ") || ""}
-                onChange={handleSkillsChange}
                 disabled={!editMode}
               />
             </div>
@@ -228,7 +222,11 @@ const StudentProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={handleUpdateLater} className="later-btn">
+            <button
+              type="button"
+              onClick={handleUpdateLater}
+              className="later-btn"
+            >
               Update Later
             </button>
           </div>
@@ -238,4 +236,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default InstitutionProfile;

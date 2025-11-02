@@ -47,8 +47,8 @@ const Signup = () => {
       // ✅ Redirect based on user role
       if (data.user.role === "student") {
         navigate("/studentprofile");
-      } else if (data.user.role === "institute") {
-        navigate("/instituteprofile");
+      } else if (data.user.role === "institution") {
+        navigate("/institutionprofile"); // still keeping the route `/instituteprofile`
       } else if (data.user.role === "company") {
         navigate("/companyprofile");
       } else {
@@ -120,7 +120,7 @@ const Signup = () => {
           required
         >
           <option value="student">Student</option>
-          <option value="institute">Institute</option>
+          <option value="institution">Institution</option>
           <option value="company">Company</option>
         </select>
         <button type="submit" disabled={loading}>

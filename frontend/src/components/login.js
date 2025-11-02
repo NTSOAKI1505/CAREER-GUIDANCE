@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+// src/components/login.js
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 import "./login.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext); // update context after login
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // new loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,7 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true); // start loading
+    setLoading(true);
 
     try {
       const res = await fetch(`${BACKEND_URL}/auth/login`, {
@@ -25,23 +28,20 @@ const Login = () => {
         body: JSON.stringify(form),
       });
 
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Server did not return JSON. Check BACKEND_URL.");
-      }
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
+      // Save only the token
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // Update context
+      setUser(data.user);
 
       navigate("/"); // redirect after login
     } catch (err) {
       setError(err.message);
       console.error(err);
     } finally {
-      setLoading(false); // stop loading
+      setLoading(false);
     }
   };
 
@@ -57,7 +57,7 @@ const Login = () => {
           value={form.email}
           onChange={handleChange}
           required
-          disabled={loading} // disable input while loading
+          disabled={loading}
         />
         <input
           type="password"
@@ -66,7 +66,7 @@ const Login = () => {
           value={form.password}
           onChange={handleChange}
           required
-          disabled={loading} // disable input while loading
+          disabled={loading}
         />
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}

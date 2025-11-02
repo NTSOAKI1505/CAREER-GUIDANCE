@@ -15,3 +15,7 @@ C:\Users\LENONG>
 C:\Users\LENONG>curl -X DELETE http://localhost:5000/api/student/profile/FOXCqWs49IEPd4ePqu6C
 {"status":"success","message":"Profile deleted successfully"}
 C:\Users\LENONG>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X GET http://localhost:5000/api/student/profile/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ilh5bThmb0VvZGE1THljRVkzc1hNIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIwODY5MzYsImV4cCI6MTc2MjY5MTczNn0.McqWwq7uCPtCLYRJ-eatOqWzluAnw52pL5SCAEqGhdw"
+{"status":"success","profiles":[{"id":"vF457K0R82pnZRa186X0","userId":"Xym8foEoda5LycEY3sXM","userInfo":{"firstName":"Monna","lastName":"Motho","email":"tho@gmail.com","role":"student"},"institution":"ihiio","course":"ojooio","yearOfStudy":998988,"bio":"ojojo","skills":["ojjuj"],"resumeUrl":"olk","profilePic":"kl","createdAt":{"_seconds":1762034694,"_nanoseconds":622000000},"editedAt":{"_seconds":1762034706,"_nanoseconds":958000000}}]}
+C:\Users\SMART TECH HUB>

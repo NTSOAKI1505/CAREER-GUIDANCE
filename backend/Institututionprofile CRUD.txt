@@ -1,0 +1,28 @@
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X GET http://localhost:5000/api/institution/profile/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4"
+{"status":"success","profiles":[]}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/institution/profile -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4" -d "{\"userId\":\"VAoVRJk0MGwfN7tojp4o\",\"institutionName\":\"Test Institute\",\"location\":\"Maseru\",\"type\":\"University\",\"description\":\"We provide excellent education services.\",\"website\":\"https://testinstitute.example.com\",\"logoUrl\":\"https://testinstitute.example.com/logo.png\",\"contactEmail\":\"info@testinstitute.example.com\",\"contactPhone\":\"+26612345678\"}"
+{"status":"success","profile":{"id":"F31i0csfqEa2qDAFfh1q","userId":"VAoVRJk0MGwfN7tojp4o","userInfo":{"firstName":"Test","lastName":"Institution","email":"testinstitution@example.com","role":"institution"},"institutionName":"Test Institute","location":"Maseru","type":"University","description":"We provide excellent education services.","website":"https://testinstitute.example.com","logoUrl":"https://testinstitute.example.com/logo.png","contactEmail":"info@testinstitute.example.com","contactPhone":"+26612345678"}}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X PUT http://localhost:5000/api/institution/profile/F31i0csfqEa2qDAFfh1q -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4" -d "{\"institutionName\":\"Updated Test Institute\",\"location\":\"Maseru\",\"type\":\"University\",\"description\":\"Updated description for the institute.\",\"website\":\"https://updatedinstitute.example.com\",\"logoUrl\":\"https://updatedinstitute.example.com/logo.png\",\"contactEmail\":\"contact@updatedinstitute.example.com\",\"contactPhone\":\"+26698765432\"}"
+{"status":"success","profile":{"id":"F31i0csfqEa2qDAFfh1q","userId":"VAoVRJk0MGwfN7tojp4o","userInfo":{"firstName":"Test","lastName":"Institution","email":"testinstitution@example.com","role":"institution"},"location":"Maseru","type":"University","createdAt":{"_seconds":1762090704,"_nanoseconds":315000000},"website":"https://updatedinstitute.example.com","contactEmail":"contact@updatedinstitute.example.com","institutionName":"Updated Test Institute","description":"Updated description for the institute.","contactPhone":"+26698765432","logoUrl":"https://updatedinstitute.example.com/logo.png","updatedAt":{"_seconds":1762090772,"_nanoseconds":861000000}}}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X GET http://localhost:5000/api/institution/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4"
+{"status":"success","profiles":[{"id":"F31i0csfqEa2qDAFfh1q","userId":"VAoVRJk0MGwfN7tojp4o","userInfo":{"firstName":"Test","lastName":"Institution","email":"testinstitution@example.com","role":"institution"},"location":"Maseru","type":"University","createdAt":{"_seconds":1762090704,"_nanoseconds":315000000},"website":"https://updatedinstitute.example.com","contactEmail":"contact@updatedinstitute.example.com","institutionName":"Updated Test Institute","description":"Updated description for the institute.","contactPhone":"+26698765432","logoUrl":"https://updatedinstitute.example.com/logo.png","updatedAt":{"_seconds":1762090772,"_nanoseconds":861000000}}]}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X DELETE http://localhost:5000/api/institution/profile/F31i0csfqEa2qDAFfh1q -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4"
+{"status":"success","message":"Profile deleted successfully"}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X GET http://localhost:5000/api/institution/profile/dzdwVzPecXT56nZfR6dF -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlZBb1ZSSmswTUd3Zk43dG9qcDRvIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMDg5OTQzLCJleHAiOjE3NjI2OTQ3NDN9.qZAkl6WquVhAprHyCwAE1VgrJ2ocDjw8DFuB-2i2tw4"
+{"status":"success","profile":{"id":"dzdwVzPecXT56nZfR6dF","userId":"VAoVRJk0MGwfN7tojp4o","userInfo":{"firstName":"Test","lastName":"Institution","email":"testinstitution@example.com","role":"institution"},"institutionName":"Test Institute","location":"Maseru","type":"University","description":"We provide excellent education services.","website":"https://testinstitute.example.com","logoUrl":"https://testinstitute.example.com/logo.png","contactEmail":"info@testinstitute.example.com","contactPhone":"+26612345678","createdAt":{"_seconds":1762091065,"_nanoseconds":988000000},"updatedAt":{"_seconds":1762091065,"_nanoseconds":988000000}}}
+C:\Users\SMART TECH HUB>

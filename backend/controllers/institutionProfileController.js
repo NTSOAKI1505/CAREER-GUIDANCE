@@ -1,12 +1,21 @@
-// controllers/studentProfileController.js
 import { db } from "../config/db.js"; // Firestore connection
 
-// ✅ Create Student Profile (linked to User)
-export const createStudentProfile = async (req, res) => {
+// ✅ Create Institution Profile (linked to User)
+export const createInstitutionProfile = async (req, res) => {
   try {
-    const { userId, institution, course, yearOfStudy, bio, skills, resumeUrl, profilePic } = req.body;
+    const {
+      userId,
+      institutionName,
+      location,
+      type,
+      description,
+      website,
+      logoUrl,
+      contactEmail,
+      contactPhone,
+    } = req.body;
 
-    if (!userId || !institution || !course || !yearOfStudy) {
+    if (!userId || !institutionName || !location || !type) {
       return res.status(400).json({ message: "Required fields are missing" });
     }
 
@@ -18,14 +27,17 @@ export const createStudentProfile = async (req, res) => {
 
     const userData = userDoc.data();
 
-    // 🚫 Check if this user already has a profile
-    const existingProfileSnap = await db.collection("studentProfiles").where("userId", "==", userId).get();
+    // 🚫 Check if this user already has an institution profile
+    const existingProfileSnap = await db
+      .collection("institutionProfiles")
+      .where("userId", "==", userId)
+      .get();
     if (!existingProfileSnap.empty) {
       return res.status(400).json({ message: "Profile already exists for this user" });
     }
 
-    // ✅ Create new student profile (auto-linked to user)
-    const newProfileRef = await db.collection("studentProfiles").add({
+    // ✅ Create new institution profile
+    const newProfileRef = await db.collection("institutionProfiles").add({
       userId,
       userInfo: {
         firstName: userData.firstName,
@@ -33,15 +45,16 @@ export const createStudentProfile = async (req, res) => {
         email: userData.email,
         role: userData.role,
       },
-      institution,
-      course,
-      yearOfStudy,
-      bio: bio || "",
-      skills: skills || [],
-      resumeUrl: resumeUrl || "",
-      profilePic: profilePic || "",
+      institutionName,
+      location,
+      type,
+      description: description || "",
+      website: website || "",
+      logoUrl: logoUrl || "",
+      contactEmail: contactEmail || "",
+      contactPhone: contactPhone || "",
       createdAt: new Date(),
-      editedAt: new Date(),
+      updatedAt: new Date(),
     });
 
     res.status(201).json({
@@ -55,17 +68,18 @@ export const createStudentProfile = async (req, res) => {
           email: userData.email,
           role: userData.role,
         },
-        institution,
-        course,
-        yearOfStudy,
-        bio,
-        skills,
-        resumeUrl,
-        profilePic,
+        institutionName,
+        location,
+        type,
+        description,
+        website,
+        logoUrl,
+        contactEmail,
+        contactPhone,
       },
     });
   } catch (err) {
-    console.error("Create profile error:", err);
+    console.error("Create institution profile error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -75,18 +89,15 @@ export const getProfileForCurrentUser = async (req, res) => {
   try {
     const userId = req.user.id; // from authMiddleware
 
-    // Fetch profile linked to this user
     const profileSnap = await db
-      .collection("studentProfiles")
+      .collection("institutionProfiles")
       .where("userId", "==", userId)
       .get();
 
     if (profileSnap.empty) {
-      // No profile yet — frontend can show blank form
       return res.json({ status: "success", profiles: [] });
     }
 
-    // Return the profile
     const profiles = profileSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", profiles });
   } catch (err) {
@@ -95,11 +106,11 @@ export const getProfileForCurrentUser = async (req, res) => {
   }
 };
 
-// ✅ Get all student profiles (admin use or generic)
-export const getAllStudentProfiles = async (req, res) => {
+// ✅ Get all institution profiles (admin/general)
+export const getAllInstitutionProfiles = async (req, res) => {
   try {
-    const profilesSnap = await db.collection("studentProfiles").get();
-    const profiles = profilesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const profilesSnap = await db.collection("institutionProfiles").get();
+    const profiles = profilesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", profiles });
   } catch (err) {
     console.error("Get profiles error:", err);
@@ -107,11 +118,11 @@ export const getAllStudentProfiles = async (req, res) => {
   }
 };
 
-// ✅ Get student profile by ID
-export const getStudentProfileById = async (req, res) => {
+// ✅ Get institution profile by ID
+export const getInstitutionProfileById = async (req, res) => {
   try {
     const { id } = req.params;
-    const profileDoc = await db.collection("studentProfiles").doc(id).get();
+    const profileDoc = await db.collection("institutionProfiles").doc(id).get();
     if (!profileDoc.exists) return res.status(404).json({ message: "Profile not found" });
 
     res.json({ status: "success", profile: { id: profileDoc.id, ...profileDoc.data() } });
@@ -121,14 +132,14 @@ export const getStudentProfileById = async (req, res) => {
   }
 };
 
-// ✅ Update student profile
-export const updateStudentProfile = async (req, res) => {
+// ✅ Update institution profile
+export const updateInstitutionProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = { ...req.body, editedAt: new Date() };
+    const updates = { ...req.body, updatedAt: new Date() };
 
-    await db.collection("studentProfiles").doc(id).update(updates);
-    const updatedDoc = await db.collection("studentProfiles").doc(id).get();
+    await db.collection("institutionProfiles").doc(id).update(updates);
+    const updatedDoc = await db.collection("institutionProfiles").doc(id).get();
 
     res.json({ status: "success", profile: { id: updatedDoc.id, ...updatedDoc.data() } });
   } catch (err) {
@@ -137,11 +148,11 @@ export const updateStudentProfile = async (req, res) => {
   }
 };
 
-// ✅ Delete student profile
-export const deleteStudentProfile = async (req, res) => {
+// ✅ Delete institution profile
+export const deleteInstitutionProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    await db.collection("studentProfiles").doc(id).delete();
+    await db.collection("institutionProfiles").doc(id).delete();
     res.json({ status: "success", message: "Profile deleted successfully" });
   } catch (err) {
     console.error("Delete profile error:", err);
