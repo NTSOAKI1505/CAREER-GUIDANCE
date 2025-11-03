@@ -71,6 +71,11 @@ function Navbar() {
       </ul>
       <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
         <li>
+          <button onClick={() => navigate("/")}>Student</button>
+        </li>
+      </ul>
+      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        <li>
           <button onClick={() => navigate("/")}>Institutions</button>
         </li>
       </ul>
