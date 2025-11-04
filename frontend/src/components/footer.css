@@ -36,7 +36,7 @@ main {
 }
 
 .footer-links a {
-  color: #ffd700; /* rich gold for links */
+  color: white; /* rich gold for links */
   text-decoration: none;
   margin: 0 10px;
   font-weight: 500;

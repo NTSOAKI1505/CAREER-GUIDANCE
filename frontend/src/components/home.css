@@ -27,7 +27,7 @@
 
 .home-header p {
   font-size: 1.125rem; /* text-lg */
-  color: #4b5563; /* gray-600 */
+  color: black; /* gray-600 */
   margin-bottom: 20px; /* space before buttons */
 }
 
@@ -115,5 +115,5 @@
 /* Role card paragraph */
 .role-card p {
   font-size: 0.875rem; /* text-sm */
-  color: #6b7280; /* gray-500 */
+  color: black; /* gray-500 */
 }

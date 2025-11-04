@@ -84,6 +84,12 @@ function Navbar() {
           <button onClick={() => navigate("/")}>companies</button>
         </li>
       </ul>
+
+      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        <li>
+          <button onClick={() => navigate("/")}>admin</button>
+        </li>
+      </ul>
       
 
       <div className="navbar-user">

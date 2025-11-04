@@ -10,7 +10,8 @@ import StudentProfile from "./components/studentprofile";
 import InstitutionProfile from "./components/institutionprofile";
 import CompanyProfile from "./components/companyprofile";
 import AdminProfile from "./components/adminprofile";
-import { UserProvider } from "./contexts/UserContext"; 
+import { UserProvider } from "./contexts/UserContext";
+import Admin  from "./components/admin";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/institutionprofile" element={<InstitutionProfile />} />
           <Route path="/companyprofile" element={<CompanyProfile />} />
           <Route path="/adminprofile" element={<AdminProfile />} />
+          <Route path="/admin" element={<Admin />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
         <Footer />
