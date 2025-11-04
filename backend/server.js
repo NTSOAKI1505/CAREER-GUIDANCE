@@ -8,6 +8,9 @@ import studentProfileRoutes from "./routes/studentProfileRoutes.js";
 import institutionProfileRoutes from "./routes/institutionProfileRoutes.js";
 import companyProfileRoutes from "./routes/companyProfileRoutes.js";
 import adminProfileRoutes from "./routes/adminProfileRoutes.js";
+import facultyRoutes from "./routes/facultyRoutes.js"; 
+import courseRoutes from "./routes/courseRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use("/api/student/profile", studentProfileRoutes);
 app.use("/api/institution/profile", institutionProfileRoutes);
 app.use("/api/company/profile", companyProfileRoutes);
 app.use("/api/admin/profile", adminProfileRoutes);
+app.use("/api/faculty", facultyRoutes); 
+app.use("/api/course", courseRoutes);
+app.use("/api/application", applicationRoutes);
 
 
 // Test route

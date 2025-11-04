@@ -1,0 +1,16 @@
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/application -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIyMzk4MTAsImV4cCI6MTc2Mjg0NDYxMH0.9DkLZhADT4d-oIBcc3t4AOX_1Z2WNOOMexAR14uGHco"
+{"status":"success","applications":[]}
+C:\Users\LENONG>
+
+
+
+now we have this course "C:\Users\LENONG>
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/course -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMjQxNzYwLCJleHAiOjE3NjI4NDY1NjB9.0CSZCIZTcmEOITAa2yvpjTja9GMa1ndIK2iQ12k_G78" -d "{\"facultyId\":\"NTJzvYzOGt0SLcpNNR3B\",\"institutionId\":\"qG7ZKT7mbqJ3FVkAdC3v\",\"courseName\":\"Bachelor of Technology in AI\",\"description\":\"AI-focused technology degree\",\"courseCode\":\"BTECH-AI-101\",\"credits\":120,\"duration\":\"4 years\"}"
+{"status":"success","course":{"id":"0IhZUGhu8Sd9MkALsObQ","facultyId":"NTJzvYzOGt0SLcpNNR3B","facultyInfo":{"facultyName":"Faculty of Technology & Engineering","deanName":"Dr. John Smith"},"courseName":"Bachelor of Technology in AI","description":"AI-focused technology degree","courseCode":"BTECH-AI-101","credits":120,"duration":"4 years"}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>",, so now thsi user want to post application "C:\Users\LENONG>
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"student@gmail.com\",\"password\":\"Lnna@12345\"}"
+{"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIyNDI0NzMsImV4cCI6MTc2Mjg0NzI3M30.kFCKHo2h6XuvRbbvRmJumAhiIvhJP5ghKFNqkaR9t-g","user":{"id":"EXfNyKuOIIVJXJm8tQ8v","firstName":"Stanna","lastName":"Stanna","email":"student@gmail.com","role":"student"}}
+C:\Users\LENONG>"
