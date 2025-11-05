@@ -28,8 +28,8 @@ const Home = () => {
         <Link to="/company" className="role-card">
           <h2>Company</h2>
             <p>Post job openings and internships for students.  
-Track and manage applications easily.  
-                Connect with talented candidates efficiently.</p>
+                 Track and manage applications easily.  
+                 Connect with talented candidates efficiently.</p>
         </Link>
 
         <Link to="/company" className="role-card">
