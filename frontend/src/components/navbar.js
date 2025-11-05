@@ -1,8 +1,36 @@
-// src/components/navbar.js
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import "./navbar.css";
+
+const roleLinks = {
+  student: [
+    { label: "Admissions", path: "/admissions" },
+    { label: "Institutions", path: "/Institutions" },
+    { label: "Jobs", path: "/jobs" },
+    { label: "Companies", path: "/Companies" },
+    { label: "Doc", path: "/Doc" },
+  ],
+  institution: [
+    { label: "Faculties & Courses", path: "/faculties" },
+    { label: "Applications", path: "/applications" },
+    { label: "Admissions", path: "/admissions" },
+    { label: "Jobs", path: "/jobs" },
+  ],
+  company: [
+    { label: "Post_Jobs", path: "/PostJobs" },
+    { label: "Job Applications", path: "/jobapplications" },
+    { label: "Alumni", path: "/Alumni" },
+  ],
+  admin: [
+    { label: "Institutions", path: "/admin/institutions" },
+    { label: "Companies", path: "/admin/companies" },
+    { label: "Users", path: "/admin/users" },
+    { label: "Applications", path: "/admin/applications" },
+    { label: "Admissions", path: "/admin/admissions" },
+    { label: "Reports", path: "/admin/reports" },
+  ],
+};
 
 function Navbar() {
   const navigate = useNavigate();
@@ -22,28 +50,27 @@ function Navbar() {
   useEffect(() => {
     const fetchProfilePic = async () => {
       if (!token || !user) return;
-
       let endpoint = "";
-      if (user.role === "student") endpoint = "/student/profile/me";
-      else if (user.role === "institution") endpoint = "/institution/profile/me";
-      else if (user.role === "company") endpoint = "/company/profile/me";
-      else if (user.role === "admin") endpoint = "/admin/profile/me";
 
-      if (!endpoint) return;
+      switch (user.role) {
+        case "student": endpoint = "/student/profile/me"; break;
+        case "institution": endpoint = "/institution/profile/me"; break;
+        case "company": endpoint = "/company/profile/me"; break;
+        case "admin": endpoint = "/admin/profile/me"; break;
+        default: return;
+      }
 
       try {
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-
         if (res.ok) {
-          let profileData = data.profiles?.[0] || null;
+          const profileData = data.profiles?.[0] || null;
           if (profileData) {
-            let pic = null;
-            if (user.role === "student" || user.role === "admin") pic = profileData.profilePic || null;
-            else pic = profileData.logoUrl || null;
-
+            const pic = user.role === "student" || user.role === "admin"
+              ? profileData.profilePic || null
+              : profileData.logoUrl || null;
             setProfilePic(pic);
           }
         }
@@ -59,39 +86,30 @@ function Navbar() {
 
   return (
     <nav className="navbar">
+      {/* Logo */}
       <div className="navbar-logo" onClick={() => navigate("/")}>
         <img src="/logo 1.png" alt="Logo" className="logo-img" />
         <span>CAREER-GUIDANCE & EMPLOYMENT</span>
       </div>
 
+      {/* Links */}
       <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <li>
-          <button onClick={() => navigate("/")}>Home</button>
-        </li>
-      </ul>
-      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <li>
-          <button onClick={() => navigate("/")}>Student</button>
-        </li>
-      </ul>
-      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <li>
-          <button onClick={() => navigate("/")}>Institutions</button>
-        </li>
-      </ul>
-      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <li>
-          <button onClick={() => navigate("/")}>companies</button>
-        </li>
+        {!user && (
+          <>
+            <li><button onClick={() => navigate("/")}>Home</button></li>
+            <li><button onClick={() => navigate("/jobs")}>Jobs</button></li>
+            <li><button onClick={() => navigate("/applications")}>Applications</button></li>
+          </>
+        )}
+
+        {user && roleLinks[user.role]?.map((link) => (
+          <li key={link.path}>
+            <button onClick={() => navigate(link.path)}>{link.label}</button>
+          </li>
+        ))}
       </ul>
 
-      <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-        <li>
-          <button onClick={() => navigate("/")}>admin</button>
-        </li>
-      </ul>
-      
-
+      {/* User Profile / Auth */}
       <div className="navbar-user">
         {user ? (
           <div className="profile" onClick={toggleProfile}>
@@ -106,11 +124,15 @@ function Navbar() {
             </div>
             {profileOpen && (
               <div className="dropdown">
-                {/* Redirect based on role */}
-                {user.role === "student" && <button onClick={() => navigate("/studentprofile")}>Profile</button>}
-                {user.role === "institution" && <button onClick={() => navigate("/institutionprofile")}>Profile</button>}
-                {user.role === "company" && <button onClick={() => navigate("/companyprofile")}>Profile</button>}
-                {user.role === "admin" && <button onClick={() => navigate("/adminprofile")}>Profile</button>}
+                <button onClick={() => {
+                  switch (user.role) {
+                    case "student": navigate("/studentprofile"); break;
+                    case "institution": navigate("/institutionprofile"); break;
+                    case "company": navigate("/companyprofile"); break;
+                    case "admin": navigate("/adminprofile"); break;
+                    default: break;
+                  }
+                }}>Profile</button>
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}

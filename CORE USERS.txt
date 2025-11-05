@@ -52,15 +52,13 @@ Admin
  │     ├── Jobs
  │     │     └── JobApplications
  │     └── Profiles
- └── Reports
-
-Student
- ├── Applications
- ├── Admissions
- ├── Documents
- ├── JobApplications
- └── Profile
-
+ ├── Students
+ │     ├── Profiles
+ │     ├── Applications
+ │     └── JobApplications
+ ├── Reports
+ ├── Notifications
+ └── SystemLogs
 
 
 

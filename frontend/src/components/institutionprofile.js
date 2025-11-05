@@ -16,23 +16,21 @@ const InstitutionProfile = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [editMode, setEditMode] = useState(true);
-
   const fetched = useRef(false);
 
-  // Fetch profile
+  // Fetch institution profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
-    const fetchProfile = async () => {
+    (async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/institution/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        console.log("Institution profile response:", data);
 
-        if (res.ok && data.profiles && data.profiles.length > 0) {
+        if (res.ok && data.profiles?.length) {
           const p = data.profiles[0];
           setProfile({
             id: p.id || "",
@@ -47,7 +45,7 @@ const InstitutionProfile = () => {
             contactEmail: p.contactEmail || user.email || "",
             contactPhone: p.contactPhone || "",
           });
-          setEditMode(false); // existing profile → view mode
+          setEditMode(false);
         } else {
           setProfile({
             userId: user.id,
@@ -61,7 +59,7 @@ const InstitutionProfile = () => {
             contactEmail: user.email || "",
             contactPhone: "",
           });
-          setEditMode(true); // new profile → edit mode
+          setEditMode(true);
         }
       } catch (err) {
         console.error(err);
@@ -69,15 +67,11 @@ const InstitutionProfile = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchProfile();
+    })();
   }, [token, user]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) =>
     setProfile((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,26 +98,13 @@ const InstitutionProfile = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: profile.userId,
-          institutionName: profile.institutionName,
-          location: profile.location,
-          type: profile.type,
-          description: profile.description,
-          website: profile.website,
-          logoUrl: profile.logoUrl,
-          contactEmail: profile.contactEmail,
-          contactPhone: profile.contactPhone,
-        }),
+        body: JSON.stringify(profile),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
-      setProfile({
-        id: data.profile.id || profile.id,
-        ...profile,
-      });
+      setProfile((prev) => ({ ...prev, id: data.profile.id || prev.id }));
       setMessage("✅ Profile saved successfully!");
       setEditMode(false);
     } catch (err) {
@@ -132,8 +113,6 @@ const InstitutionProfile = () => {
       setSaving(false);
     }
   };
-
-  const handleUpdateLater = () => navigate("/");
 
   if (loading) {
     return (
@@ -145,6 +124,15 @@ const InstitutionProfile = () => {
   }
 
   if (!profile) return <div className="error">Profile not found</div>;
+
+  const inputFields = [
+    { name: "institutionName", placeholder: "Institution Name" },
+    { name: "contactEmail", placeholder: "Email", type: "email" },
+    { name: "contactPhone", placeholder: "Phone" },
+    { name: "location", placeholder: "Location" },
+    { name: "type", placeholder: "Type (University, College, etc.)" },
+    { name: "website", placeholder: "Website URL" },
+  ];
 
   return (
     <div className="profile-wrapper">
@@ -163,39 +151,26 @@ const InstitutionProfile = () => {
 
       <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* Left Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Institution Info</h3>
               <img
+                loading="lazy"
                 src={profile.logoUrl || "https://via.placeholder.com/150"}
                 alt="Logo"
                 className="profile-image-large"
               />
-              <input
-                type="text"
-                name="institutionName"
-                placeholder="Institution Name"
-                value={profile.institutionName || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="email"
-                name="contactEmail"
-                placeholder="Email"
-                value={profile.contactEmail || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactPhone"
-                placeholder="Phone"
-                value={profile.contactPhone || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {inputFields.slice(0, 3).map((f) => (
+                <input
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
 
             <div className="profile-card">
@@ -208,38 +183,26 @@ const InstitutionProfile = () => {
                 onChange={handleChange}
                 disabled={!editMode}
               />
-              {profile.logoUrl && <img src={profile.logoUrl} alt="Logo Preview" className="profile-image" />}
+              {profile.logoUrl && (
+                <img src={profile.logoUrl} alt="Logo Preview" className="profile-image" loading="lazy"/>
+              )}
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Details</h3>
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                value={profile.location || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="type"
-                placeholder="Type (University, College, etc.)"
-                value={profile.type || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="website"
-                placeholder="Website URL"
-                value={profile.website || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {inputFields.slice(3).map((f) => (
+                <input
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
               <textarea
                 name="description"
                 placeholder="Description"
@@ -256,7 +219,7 @@ const InstitutionProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={handleUpdateLater} className="later-btn">
+            <button type="button" onClick={() => navigate("/")} className="later-btn">
               Cancel
             </button>
           </div>

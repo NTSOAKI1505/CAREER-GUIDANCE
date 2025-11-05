@@ -19,21 +19,21 @@ const StudentProfile = () => {
 
   const fetched = useRef(false);
 
-  // Fetch profile
+  // Fetch student profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
-    const fetchProfile = async () => {
+    (async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/student/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
-        if (res.ok && data.profiles && data.profiles.length > 0) {
+        if (res.ok && data.profiles?.length) {
           setProfile(data.profiles[0]);
-          setEditMode(false); // profile exists
+          setEditMode(false);
         } else {
           setProfile({
             userId: user.id,
@@ -54,26 +54,18 @@ const StudentProfile = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchProfile();
+    })();
   }, [token, user]);
 
-  // Input change handlers
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) =>
     setProfile((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleSkillsChange = (e) => {
-    const value = e.target.value;
+  const handleSkillsChange = ({ target: { value } }) =>
     setProfile((prev) => ({
       ...prev,
       skills: value.split(",").map((s) => s.trim()).filter(Boolean),
     }));
-  };
 
-  // Submit profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
@@ -100,14 +92,8 @@ const StudentProfile = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: profile.userId,
-          institution: profile.institution,
-          course: profile.course,
+          ...profile,
           yearOfStudy: Number(profile.yearOfStudy),
-          bio: profile.bio,
-          skills: profile.skills,
-          resumeUrl: profile.resumeUrl,
-          profilePic: profile.profilePic,
         }),
       });
 
@@ -124,9 +110,6 @@ const StudentProfile = () => {
     }
   };
 
-  const handleUpdateLater = () => navigate("/");
-
-  // Animated loader while fetching
   if (loading) {
     return (
       <div className="loader-wrapper">
@@ -138,18 +121,25 @@ const StudentProfile = () => {
 
   if (!profile) return <div className="error">Profile not found</div>;
 
+  const leftFields = [
+    { name: "resumeUrl", placeholder: "Resume URL" },
+    { name: "profilePic", placeholder: "Profile Picture URL" },
+  ];
+
+  const rightFields = [
+    { name: "institution", placeholder: "Institution" },
+    { name: "course", placeholder: "Course" },
+    { name: "yearOfStudy", placeholder: "Year of Study", type: "number" },
+  ];
+
   return (
     <div className="profile-wrapper">
       <div className="profile-header">
         <h1>Student Profile</h1>
         {!editMode && (
           <div className="profile-actions-view">
-            <button className="edit-btn" onClick={() => setEditMode(true)}>
-              Edit
-            </button>
-            <button className="later-btn" onClick={() => navigate("/")}>
-              Cancel
-            </button>
+            <button className="edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+            <button className="later-btn" onClick={() => navigate("/")}>Cancel</button>
           </div>
         )}
       </div>
@@ -157,16 +147,13 @@ const StudentProfile = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form
-        onSubmit={handleSubmit}
-        className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
-      >
+      <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* Left Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Personal Info</h3>
               <img
+                loading="lazy"
                 src={profile.profilePic || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="profile-image-large"
@@ -177,53 +164,34 @@ const StudentProfile = () => {
 
             <div className="profile-card">
               <h3>Uploads</h3>
-              <input
-                type="text"
-                name="resumeUrl"
-                placeholder="Resume URL"
-                value={profile.resumeUrl || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="profilePic"
-                placeholder="Profile Picture URL"
-                value={profile.profilePic || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {leftFields.map((f) => (
+                <input
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Education</h3>
-              <input
-                type="text"
-                name="institution"
-                placeholder="Institution"
-                value={profile.institution || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="course"
-                placeholder="Course"
-                value={profile.course || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="number"
-                name="yearOfStudy"
-                placeholder="Year of Study"
-                value={profile.yearOfStudy || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {rightFields.map((f) => (
+                <input
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
 
             <div className="profile-card">
@@ -252,7 +220,7 @@ const StudentProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={handleUpdateLater} className="later-btn">
+            <button type="button" onClick={() => navigate("/")} className="later-btn">
               Cancel
             </button>
           </div>

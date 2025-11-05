@@ -23,14 +23,14 @@ const CompanyProfile = () => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
-    const fetchProfile = async () => {
+    (async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/company/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
-        if (res.ok && data.profiles && data.profiles.length > 0) {
+        if (res.ok && data.profiles?.length) {
           setProfile(data.profiles[0]);
           setEditMode(false);
         } else {
@@ -54,18 +54,12 @@ const CompanyProfile = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchProfile();
+    })();
   }, [token, user]);
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) =>
     setProfile((prev) => ({ ...prev, [name]: value }));
-  };
 
-  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
@@ -91,17 +85,7 @@ const CompanyProfile = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: profile.userId,
-          companyName: profile.companyName,
-          location: profile.location,
-          industry: profile.industry,
-          description: profile.description,
-          website: profile.website,
-          logoUrl: profile.logoUrl,
-          contactEmail: profile.contactEmail,
-          contactPhone: profile.contactPhone,
-        }),
+        body: JSON.stringify(profile),
       });
 
       const data = await res.json();
@@ -117,9 +101,6 @@ const CompanyProfile = () => {
     }
   };
 
-  const handleUpdateLater = () => navigate("/");
-
-  // Loader while fetching
   if (loading) {
     return (
       <div className="loader-wrapper">
@@ -150,16 +131,13 @@ const CompanyProfile = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form
-        onSubmit={handleSubmit}
-        className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
-      >
+      <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* LEFT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Company Info</h3>
               <img
+                loading="lazy"
                 src={profile.logoUrl || "https://via.placeholder.com/150"}
                 alt="Company Logo"
                 className="profile-image-large"
@@ -171,61 +149,34 @@ const CompanyProfile = () => {
 
             <div className="profile-card">
               <h3>Uploads</h3>
-              <input
-                type="text"
-                name="logoUrl"
-                placeholder="Company Logo URL"
-                value={profile.logoUrl || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="website"
-                placeholder="Company Website"
-                value={profile.website || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {["logoUrl", "website"].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  name={field}
+                  placeholder={field === "logoUrl" ? "Company Logo URL" : "Company Website"}
+                  value={profile[field] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
           </div>
 
-          {/* RIGHT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Company Details</h3>
-              <input
-                type="text"
-                name="companyName"
-                placeholder="Company Name"
-                value={profile.companyName || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactPhone"
-                placeholder="Contact Phone"
-                value={profile.contactPhone || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                value={profile.location || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="industry"
-                placeholder="Industry"
-                value={profile.industry || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {["companyName", "contactPhone", "location", "industry"].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  name={field}
+                  placeholder={field.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
+                  value={profile[field] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
 
             <div className="profile-card">
@@ -246,11 +197,7 @@ const CompanyProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button
-              type="button"
-              onClick={handleUpdateLater}
-              className="later-btn"
-            >
+            <button type="button" onClick={() => navigate("/")} className="later-btn">
               Cancel
             </button>
           </div>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css"; // keep your existing styles
+import "./studentprofile.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,23 +18,22 @@ const AdminProfile = () => {
   const [editMode, setEditMode] = useState(true);
   const fetched = useRef(false);
 
-  // Fetch admin profile
+  // Fetch admin profile once
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
-    const fetchProfile = async () => {
+    (async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/admin/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
-        if (res.ok && data.profiles && data.profiles.length > 0) {
+        if (res.ok && data.profiles?.length) {
           setProfile(data.profiles[0]);
           setEditMode(false);
         } else {
-          // initialize new profile
           setProfile({
             userId: user.id,
             userInfo: user,
@@ -53,18 +52,12 @@ const AdminProfile = () => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchProfile();
+    })();
   }, [token, user]);
 
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) =>
     setProfile((prev) => ({ ...prev, [name]: value }));
-  };
 
-  // Save or update profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!profile) return;
@@ -90,15 +83,7 @@ const AdminProfile = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: profile.userId,
-          department: profile.department,
-          roleInAdmin: profile.roleInAdmin,
-          bio: profile.bio,
-          contactEmail: profile.contactEmail,
-          contactPhone: profile.contactPhone,
-          profilePic: profile.profilePic,
-        }),
+        body: JSON.stringify(profile),
       });
 
       const data = await res.json();
@@ -114,9 +99,6 @@ const AdminProfile = () => {
     }
   };
 
-  const handleUpdateLater = () => navigate("/");
-
-  // Loader while profile is fetching
   if (loading) {
     return (
       <div className="loader-wrapper">
@@ -147,16 +129,13 @@ const AdminProfile = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form
-        onSubmit={handleSubmit}
-        className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}
-      >
+      <form onSubmit={handleSubmit} className={`profile-form ${editMode ? "edit-mode" : "view-mode"}`}>
         <div className="profile-columns">
-          {/* LEFT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Admin Info</h3>
               <img
+                loading="lazy"
                 src={profile.profilePic || "https://via.placeholder.com/150"}
                 alt="Profile Pic"
                 className="profile-image-large"
@@ -180,42 +159,20 @@ const AdminProfile = () => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN */}
           <div className="profile-column">
             <div className="profile-card">
               <h3>Details</h3>
-              <input
-                type="text"
-                name="department"
-                placeholder="Department"
-                value={profile.department || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="roleInAdmin"
-                placeholder="Role in Admin"
-                value={profile.roleInAdmin || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactPhone"
-                placeholder="Contact Phone"
-                value={profile.contactPhone || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-              <input
-                type="text"
-                name="contactEmail"
-                placeholder="Email"
-                value={profile.contactEmail || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
+              {["department", "roleInAdmin", "contactPhone", "contactEmail"].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  name={field}
+                  placeholder={field.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
+                  value={profile[field] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
             </div>
 
             <div className="profile-card">
@@ -236,7 +193,7 @@ const AdminProfile = () => {
             <button type="submit" disabled={saving} className="save-btn">
               {saving ? "Saving..." : "Save Changes"}
             </button>
-            <button type="button" onClick={handleUpdateLater} className="later-btn">
+            <button type="button" onClick={() => navigate("/")} className="later-btn">
               Cancel
             </button>
           </div>

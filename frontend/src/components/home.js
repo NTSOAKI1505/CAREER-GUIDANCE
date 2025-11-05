@@ -9,13 +9,6 @@ const Home = () => {
       <header className="home-header">
         <h1>Career Guidance and Employment System</h1>
         <p>Connecting Students, Institutes, and Companies</p>
-
-        {/* Buttons for Login and Signup */}
-        <div className="header-buttons">
-          <Link to="/login" className="btn btn-login">
-            Getstarted
-          </Link>
-        </div>
       </header>
 
       {/* Role Selection */}

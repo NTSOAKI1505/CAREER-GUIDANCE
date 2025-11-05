@@ -4,69 +4,63 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 3rem 1.5rem;
   background-color: #fff8e7; /* light cream background */
-  text-align: center;
-  padding: 0 16px;
 }
 
 /* Header */
-.home-header {
-  margin-bottom: 40px;
+.home-container header {
+  text-align: center;
+  margin-bottom: 3rem;
 }
 
-.home-header h1 {
-  font-size: 2.5rem; /* text-4xl */
-  font-weight: 700;
-  /* More blue than gold */
+.home-container header h1 {
+  font-size: 2.5rem; /* 4xl */
+  font-weight: 800;
   background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
 }
 
-.home-header p {
-  font-size: 1.125rem; /* text-lg */
-  color: black; /* gray-600 */
-  margin-bottom: 20px; /* space before buttons */
+.home-container header p {
+  margin-top: 1rem;
+  font-size: 1.125rem; /* lg */
+  color: #1f2937; /* gray-800 */
 }
 
-/* Header buttons container */
+/* Header buttons (for public users) */
 .header-buttons {
+  margin-top: 1.5rem;
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 40px; /* space before role cards */
+  gap: 1rem;
 }
 
-/* General button styles */
-.btn {
-  padding: 10px 25px;
-  border-radius: 12px;
+.header-buttons a {
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
   font-weight: 600;
+  color: #fff;
   text-decoration: none;
+  background: linear-gradient(90deg, #0a1f44 0%, #ffd700 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Login button - rich blue */
-.btn-login {
-  background: #ffdf33;
-}
-
-.btn-login:hover {
-  background: #ffdf33;
+.header-buttons a:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Role grid */
+/* Role Cards Grid */
 .role-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
-  max-width: 1024px;
+  gap: 2rem;
   width: 100%;
+  max-width: 1200px;
 }
 
 @media (min-width: 640px) {
@@ -75,45 +69,60 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .role-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* Role card */
+/* Role Card */
 .role-card {
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 32px;
-  border-radius: 24px;
-  border: 1px solid #e5e7eb;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 1.5rem;
+  border-radius: 2rem;
+  background: linear-gradient(to bottom right, #ffffff, #fff8e7);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-/* Hover effect with gold glow */
 .role-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5); /* gold glow */
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
   background: linear-gradient(145deg, #0a1f44 0%, #ffd700 85%, #0a1f44 100%);
 }
 
-/* Role card headings with gradient text (more blue) */
+/* Role Card Icon */
+.role-card img {
+  width: 6rem;
+  height: 6rem;
+  margin-bottom: 1rem;
+}
+
+/* Role Card Heading */
 .role-card h2 {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-transform: capitalize;
+  text-align: center;
 }
 
-/* Role card paragraph */
+/* Role Card Description */
 .role-card p {
-  font-size: 0.875rem; /* text-sm */
-  color: black; /* gray-500 */
+  font-size: 0.875rem;
+  color: #374151; /* gray-700 */
+  text-align: center;
+}
+
+/* Hover text inside role card (optional) */
+.role-card:hover p {
+  color: #fff;
+  transition: color 0.3s ease;
 }
