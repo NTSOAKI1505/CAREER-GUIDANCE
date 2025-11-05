@@ -1,27 +1,25 @@
 import { db } from "../config/db.js";
 
-// ✅ Create a new application
+// ✅ Create a new application (student only)
 export const createApplication = async (req, res) => {
   try {
     const { courseId } = req.body;
-    const userId = req.user.id; // from protect middleware
+    const userId = req.user.id;
 
     if (!courseId) {
       return res.status(400).json({ message: "courseId is required" });
     }
 
-    // Get the student's profile ID
+    // Get the student's profile
     const profileSnap = await db.collection("studentProfiles")
       .where("userId", "==", userId)
       .limit(1)
       .get();
 
-    if (profileSnap.empty) {
-      return res.status(404).json({ message: "Student profile not found" });
-    }
+    if (profileSnap.empty) return res.status(404).json({ message: "Student profile not found" });
 
-    const studentProfile = profileSnap.docs[0];
-    const studentProfileId = studentProfile.id;
+    const studentProfile = profileSnap.docs[0].data();
+    const studentProfileId = profileSnap.docs[0].id;
 
     // Get the course info
     const courseDoc = await db.collection("courses").doc(courseId).get();
@@ -32,7 +30,7 @@ export const createApplication = async (req, res) => {
       return res.status(500).json({ message: "Course missing facultyId or institutionId" });
     }
 
-    // Create the application
+    // Create application
     const newAppRef = await db.collection("applications").add({
       studentId: studentProfileId,
       courseId,
@@ -62,7 +60,52 @@ export const createApplication = async (req, res) => {
   }
 };
 
-// ✅ Get all applications
+// ✅ Get applications for logged-in student or institution
+export const getMyApplications = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.role; // "student" or "institution"
+
+    let query;
+    if (role === "student") {
+      const profileSnap = await db.collection("studentProfiles")
+        .where("userId", "==", userId)
+        .limit(1)
+        .get();
+
+      if (profileSnap.empty) return res.status(404).json({ message: "Student profile not found" });
+
+      const studentId = profileSnap.docs[0].id;
+      query = db.collection("applications").where("studentId", "==", studentId);
+
+    } else if (role === "institution") {
+      const profileSnap = await db.collection("institutionProfiles")
+        .where("userId", "==", userId)
+        .limit(1)
+        .get();
+
+      if (profileSnap.empty) return res.status(404).json({ message: "Institution profile not found" });
+
+      const institutionId = profileSnap.docs[0].id;
+      query = db.collection("applications").where("institutionId", "==", institutionId);
+
+    } else {
+      return res.status(403).json({ message: "Unauthorized role" });
+    }
+
+    const snap = await query.get();
+    if (snap.empty) return res.status(404).json({ message: "No applications found" });
+
+    const applications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json({ status: "success", applications });
+
+  } catch (err) {
+    console.error("Get my applications error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// ✅ Other CRUD operations (unchanged)
 export const getAllApplications = async (req, res) => {
   try {
     const snap = await db.collection("applications").get();
@@ -74,7 +117,6 @@ export const getAllApplications = async (req, res) => {
   }
 };
 
-// ✅ Get application by ID
 export const getApplicationById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -87,51 +129,6 @@ export const getApplicationById = async (req, res) => {
   }
 };
 
-// ✅ Get applications for logged-in student
-export const getApplicationsByStudent = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const profileSnap = await db.collection("studentProfiles")
-      .where("userId", "==", userId)
-      .limit(1)
-      .get();
-
-    if (profileSnap.empty) {
-      return res.status(404).json({ message: "Student profile not found" });
-    }
-
-    const studentProfileId = profileSnap.docs[0].id;
-
-    const snap = await db.collection("applications")
-      .where("studentId", "==", studentProfileId)
-      .get();
-
-    const applications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ status: "success", applications });
-  } catch (err) {
-    console.error("Get applications by student error:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
-
-// ✅ Get applications by institution
-export const getApplicationsByInstitution = async (req, res) => {
-  try {
-    const { institutionId } = req.params;
-    const snap = await db.collection("applications")
-      .where("institutionId", "==", institutionId)
-      .get();
-
-    const applications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ status: "success", applications });
-  } catch (err) {
-    console.error("Get applications by institution error:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
-
-// ✅ Update application
 export const updateApplication = async (req, res) => {
   try {
     const { id } = req.params;
@@ -145,7 +142,6 @@ export const updateApplication = async (req, res) => {
   }
 };
 
-// ✅ Delete application
 export const deleteApplication = async (req, res) => {
   try {
     const { id } = req.params;

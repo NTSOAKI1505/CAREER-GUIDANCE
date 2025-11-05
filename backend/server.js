@@ -11,6 +11,7 @@ import adminProfileRoutes from "./routes/adminProfileRoutes.js";
 import facultyRoutes from "./routes/facultyRoutes.js"; 
 import courseRoutes from "./routes/courseRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
+import admissionRoutes from "./routes/admissionRoutes.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/admin/profile", adminProfileRoutes);
 app.use("/api/faculty", facultyRoutes); 
 app.use("/api/course", courseRoutes);
 app.use("/api/application", applicationRoutes);
+app.use("/api/admission", admissionRoutes);
 
 
 // Test route

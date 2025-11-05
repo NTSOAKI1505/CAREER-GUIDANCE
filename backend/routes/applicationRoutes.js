@@ -5,8 +5,7 @@ import {
   createApplication,
   getAllApplications,
   getApplicationById,
-  getApplicationsByStudent, // now uses logged-in student's profile
-  getApplicationsByInstitution,
+  getMyApplications, // unified for student & institution
   updateApplication,
   deleteApplication,
 } from "../controllers/applicationController.js";
@@ -14,13 +13,22 @@ import {
 const router = express.Router();
 router.use(protect);
 
-// CRUD routes
+// Student creates a new application
 router.post("/", createApplication);
+
+// Get applications for logged-in user (student or institution)
+router.get("/me", getMyApplications);
+
+// Admin/institution: get all applications (optional, for full list)
 router.get("/", getAllApplications);
-router.get("/me", getApplicationsByStudent); // student sees only their applications
-router.get("/institution/:institutionId", getApplicationsByInstitution);
+
+// Get a single application by ID
 router.get("/:id", getApplicationById);
+
+// Update application
 router.put("/:id", updateApplication);
+
+// Delete application
 router.delete("/:id", deleteApplication);
 
 export default router;

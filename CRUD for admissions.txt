@@ -1,0 +1,28 @@
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/admission -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA" -d "{\"applicationId\":\"oZ80UQTyZCMZJLDzRwvE\",\"admissionStatus\":\"Accepted\",\"remarks\":\"Welcome to Limkokwing University\"}"
+{"status":"success","admission":{"id":"V4ZDH6v74tPwm9kXnN4o","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","applicationDate":{"_seconds":1762321566,"_nanoseconds":422000000},"status":"Pending","remarks":"Welcome to Limkokwing University","createdAt":{"_seconds":1762321566,"_nanoseconds":422000000},"updatedAt":{"_seconds":1762321566,"_nanoseconds":422000000},"admissionStatus":"Accepted"}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/admission -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA"
+{"status":"success","admissions":[{"id":"V4ZDH6v74tPwm9kXnN4o","applicationId":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","admissionStatus":"Accepted","remarks":"Welcome to Limkokwing University","createdAt":{"_seconds":1762323312,"_nanoseconds":515000000},"updatedAt":{"_seconds":1762323312,"_nanoseconds":515000000}}]}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/admission/V4ZDH6v74tPwm9kXnN4o -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA"
+{"status":"success","admission":{"id":"V4ZDH6v74tPwm9kXnN4o","applicationId":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","admissionStatus":"Accepted","remarks":"Welcome to Limkokwing University","createdAt":{"_seconds":1762323312,"_nanoseconds":515000000},"updatedAt":{"_seconds":1762323312,"_nanoseconds":515000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X PUT http://localhost:5000/api/admission/I415ZOs1TOX5CPGb6BTt -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA" -d "{\"admissionStatus\":\"Rejected\",\"remarks\":\"Missing documents\"}"
+{"status":"success","admission":{"id":"I415ZOs1TOX5CPGb6BTt","applicationId":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","createdAt":{"_seconds":1762323628,"_nanoseconds":973000000},"admissionStatus":"Rejected","remarks":"Missing documents","updatedAt":{"_seconds":1762325927,"_nanoseconds":492000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X DELETE http://localhost:5000/api/admission/V4ZDH6v74tPwm9kXnN4o -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA"
+{"status":"success","message":"Admission deleted successfully"}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/admission/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIzMjQxNjMsImV4cCI6MTc2MjkyODk2M30.gwELbZSsI2sGcDKbeWCliZ1Bafbclstg99WWU5Nv4k8"
+{"status":"success","admissions":[{"id":"Z1fX6lEEMs3DggeZcW2A","applicationId":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","admissionStatus":"Accepted","remarks":"Welcome to Limkokwing University","createdAt":{"_seconds":1762326051,"_nanoseconds":535000000},"updatedAt":{"_seconds":1762326051,"_nanoseconds":535000000}}]}
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/institution/profile/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxnZ1Q0V09WbEtVNkdneWZuQmVzIiwicm9sZSI6Imluc3RpdHV0aW9uIiwiaWF0IjoxNzYyMzIzMTAyLCJleHAiOjE3NjI5Mjc5MDJ9.Ioxhksz4HtiZBmH7bJD-wrFZrUpvcmFJZC-dAQ6WthA"
+{"status":"success","profiles":[{"id":"qG7ZKT7mbqJ3FVkAdC3v","userId":"LggT4WOVlKU6GgyfnBes","userInfo":{"firstName":"LUCT","lastName":"LUCT","email":"luct@gmail.com","role":"institution"},"institutionName":"LImkokwing University","location":"Maseru","type":"University","description":"welcome","website":"www.wel.com","logoUrl":"//","contactEmail":"luct@gmail.com","contactPhone":"54098765","createdAt":{"_seconds":1762235175,"_nanoseconds":496000000},"updatedAt":{"_seconds":1762235175,"_nanoseconds":496000000}}]}
+C:\Users\LENONG>
