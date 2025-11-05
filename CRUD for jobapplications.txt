@@ -1,0 +1,23 @@
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/jobApplications -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIzMjQxNjMsImV4cCI6MTc2MjkyODk2M30.gwELbZSsI2sGcDKbeWCliZ1Bafbclstg99WWU5Nv4k8" -H "Content-Type: application/json" -d "{\"jobId\":\"y3pzVE74xhb6fbUgyqxF\"}"
+{"status":"success","application":{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","status":"pending","appliedAt":"2025-11-05T09:38:58.370Z","updatedAt":"2025-11-05T09:38:58.370Z"}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X PUT http://localhost:5000/api/jobApplications/bCGgVmkDkpdZFVbzC9Rh -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY" -H "Content-Type: application/json" -d "{\"status\":\"reviewed\"}"
+{"status":"success","application":{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","studentName":"Stanna Stanna","studentEmail":"student@gmail.com","studentSkills":["run"],"studentCourse":"English","institutionName":"high school","graduationYear":2019,"appliedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"status":"reviewed","updatedAt":{"_seconds":1762335963,"_nanoseconds":17000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobApplications/bCGgVmkDkpdZFVbzC9Rh -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","application":{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","studentName":"Stanna Stanna","studentEmail":"student@gmail.com","studentSkills":["run"],"studentCourse":"English","institutionName":"high school","graduationYear":2019,"appliedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"status":"reviewed","updatedAt":{"_seconds":1762335963,"_nanoseconds":17000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobApplications/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","applications":[{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","studentName":"Stanna Stanna","studentEmail":"student@gmail.com","studentSkills":["run"],"studentCourse":"English","institutionName":"high school","graduationYear":2019,"appliedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"status":"reviewed","updatedAt":{"_seconds":1762335963,"_nanoseconds":17000000}}]}
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobApplications/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIzMjQxNjMsImV4cCI6MTc2MjkyODk2M30.gwELbZSsI2sGcDKbeWCliZ1Bafbclstg99WWU5Nv4k8"
+{"status":"success","applications":[{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","studentName":"Stanna Stanna","studentEmail":"student@gmail.com","studentSkills":["run"],"studentCourse":"English","institutionName":"high school","graduationYear":2019,"appliedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"updatedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"status":"pending"}]}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobApplications/company/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","applications":[{"id":"bCGgVmkDkpdZFVbzC9Rh","jobId":"y3pzVE74xhb6fbUgyqxF","studentId":"xORyJcs7beynE7nMY0fb","studentName":"Stanna Stanna","studentEmail":"student@gmail.com","studentSkills":["run"],"studentCourse":"English","institutionName":"high school","graduationYear":2019,"appliedAt":{"_seconds":1762335538,"_nanoseconds":370000000},"status":"reviewed","updatedAt":{"_seconds":1762335963,"_nanoseconds":17000000}}]}
+C:\Users\LENONG>

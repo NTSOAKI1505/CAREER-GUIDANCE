@@ -12,6 +12,8 @@ import facultyRoutes from "./routes/facultyRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import admissionRoutes from "./routes/admissionRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import jobApplicationRoutes from "./routes/jobApplicationRoutes.js";
 
 const app = express();
 
@@ -30,7 +32,8 @@ app.use("/api/faculty", facultyRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/application", applicationRoutes);
 app.use("/api/admission", admissionRoutes);
-
+app.use("/api/jobs", jobRoutes);
+app.use("/api/jobApplications", jobApplicationRoutes);
 
 // Test route
 app.get("/me", (req, res) => {

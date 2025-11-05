@@ -1,0 +1,29 @@
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobs -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","jobs":[]}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X POST http://localhost:5000/api/jobs -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY" -H "Content-Type: application/json" -d "{\"title\":\"Software Developer\",\"description\":\"Develop AI solutions\",\"requirements\":[\"JavaScript\",\"Node.js\"],\"location\":\"Maseru\",\"jobType\":\"Full-time\",\"salaryRange\":\"3000-4000 MTL\",\"applicationDeadline\":\"2025-12-31T00:00:00.000Z\"}"
+{"status":"success","job":{"id":"qYZXDehfm70oX4R4ziux","companyId":"Tq290kbOpYU4T3pvAhtg","title":"Software Developer","description":"Develop AI solutions","requirements":["JavaScript","Node.js"],"location":"Maseru","jobType":"Full-time","salaryRange":"3000-4000 MTL","applicationDeadline":"2025-12-31T00:00:00.000Z"}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobs -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","jobs":[{"id":"qYZXDehfm70oX4R4ziux","companyId":"Tq290kbOpYU4T3pvAhtg","title":"Software Developer","description":"Develop AI solutions","requirements":["JavaScript","Node.js"],"location":"Maseru","jobType":"Full-time","salaryRange":"3000-4000 MTL","applicationDeadline":{"_seconds":1767139200,"_nanoseconds":0},"createdAt":{"_seconds":1762332832,"_nanoseconds":595000000},"updatedAt":{"_seconds":1762332832,"_nanoseconds":595000000}}]}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobs/qYZXDehfm70oX4R4ziux -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","job":{"id":"qYZXDehfm70oX4R4ziux","companyId":"Tq290kbOpYU4T3pvAhtg","title":"Software Developer","description":"Develop AI solutions","requirements":["JavaScript","Node.js"],"location":"Maseru","jobType":"Full-time","salaryRange":"3000-4000 MTL","applicationDeadline":{"_seconds":1767139200,"_nanoseconds":0},"createdAt":{"_seconds":1762332832,"_nanoseconds":595000000},"updatedAt":{"_seconds":1762332832,"_nanoseconds":595000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X PUT http://localhost:5000/api/jobs/qYZXDehfm70oX4R4ziux -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY" -H "Content-Type: application/json" -d "{\"title\":\"Senior Software Developer\",\"salaryRange\":\"4000-5000 MTL\"}"
+{"status":"success","job":{"id":"qYZXDehfm70oX4R4ziux","companyId":"Tq290kbOpYU4T3pvAhtg","description":"Develop AI solutions","requirements":["JavaScript","Node.js"],"location":"Maseru","jobType":"Full-time","applicationDeadline":{"_seconds":1767139200,"_nanoseconds":0},"createdAt":{"_seconds":1762332832,"_nanoseconds":595000000},"salaryRange":"4000-5000 MTL","title":"Senior Software Developer","updatedAt":{"_seconds":1762333172,"_nanoseconds":982000000}}}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X DELETE http://localhost:5000/api/jobs/qYZXDehfm70oX4R4ziux -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","message":"Job deleted successfully"}
+C:\Users\LENONG>
+C:\Users\LENONG>
+C:\Users\LENONG>curl -X GET http://localhost:5000/api/jobs/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRFb1RqNlRkZXNRbmtmS3hyNVdiIiwicm9sZSI6ImNvbXBhbnkiLCJpYXQiOjE3NjIzMzA2OTQsImV4cCI6MTc2MjkzNTQ5NH0.6ir_fkuZcOJVpbtHoI5X_cqgRtjWPaBS_zyns6zYtBY"
+{"status":"success","jobs":[{"id":"y3pzVE74xhb6fbUgyqxF","companyId":"Tq290kbOpYU4T3pvAhtg","title":"Software Developer","description":"Develop AI solutions","requirements":["JavaScript","Node.js"],"location":"Maseru","jobType":"Full-time","salaryRange":"3000-4000 MTL","applicationDeadline":{"_seconds":1767139200,"_nanoseconds":0},"createdAt":{"_seconds":1762333330,"_nanoseconds":122000000},"updatedAt":{"_seconds":1762333330,"_nanoseconds":122000000}}]}
+C:\Users\LENONG>
