@@ -1,15 +1,15 @@
 // src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/home";
-import Navbar from "./components/navbar";
-import Footer from "./components/footer";
-import Login from "./components/login";
-import Signup from "./components/signup";
-import StudentProfile from "./components/studentprofile";
-import InstitutionProfile from "./components/institutionprofile";
-import CompanyProfile from "./components/companyprofile";
-import AdminProfile from "./components/adminprofile";
+import Home from "./components/default/home";
+import Navbar from "./components/default/navbar";
+import Footer from "./components/default/footer";
+import Login from "./components/auth/login";
+import Signup from "./components/auth/signup";
+import StudentProfile from "./components/student/studentprofile";
+import InstitutionProfile from "./components/institution/institutionprofile";
+import CompanyProfile from "./components/company/companyprofile";
+import AdminProfile from "./components/admin/adminprofile";
 import { UserProvider } from "./contexts/UserContext";
 
 function App() {
