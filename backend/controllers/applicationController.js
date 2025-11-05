@@ -3,11 +3,27 @@ import { db } from "../config/db.js";
 // ✅ Create a new application
 export const createApplication = async (req, res) => {
   try {
-    const { studentId, courseId } = req.body;
-    if (!studentId || !courseId) {
-      return res.status(400).json({ message: "studentId and courseId are required" });
+    const { courseId } = req.body;
+    const userId = req.user.id; // from protect middleware
+
+    if (!courseId) {
+      return res.status(400).json({ message: "courseId is required" });
     }
 
+    // Get the student's profile ID
+    const profileSnap = await db.collection("studentProfiles")
+      .where("userId", "==", userId)
+      .limit(1)
+      .get();
+
+    if (profileSnap.empty) {
+      return res.status(404).json({ message: "Student profile not found" });
+    }
+
+    const studentProfile = profileSnap.docs[0];
+    const studentProfileId = studentProfile.id;
+
+    // Get the course info
     const courseDoc = await db.collection("courses").doc(courseId).get();
     if (!courseDoc.exists) return res.status(404).json({ message: "Course not found" });
 
@@ -16,11 +32,12 @@ export const createApplication = async (req, res) => {
       return res.status(500).json({ message: "Course missing facultyId or institutionId" });
     }
 
+    // Create the application
     const newAppRef = await db.collection("applications").add({
-      studentId,                                // Reference to StudentProfile
-      courseId,                                 // Reference to Course
-      facultyId: courseData.facultyId,          // Reference to Faculty
-      institutionId: courseData.institutionId,  // Reference to InstitutionProfile
+      studentId: studentProfileId,
+      courseId,
+      facultyId: courseData.facultyId,
+      institutionId: courseData.institutionId,
       applicationDate: new Date(),
       status: "Pending",
       remarks: "",
@@ -32,7 +49,7 @@ export const createApplication = async (req, res) => {
       status: "success",
       application: {
         id: newAppRef.id,
-        studentId,
+        studentId: studentProfileId,
         courseId,
         facultyId: courseData.facultyId,
         institutionId: courseData.institutionId,
@@ -70,11 +87,26 @@ export const getApplicationById = async (req, res) => {
   }
 };
 
-// ✅ Get applications by student
+// ✅ Get applications for logged-in student
 export const getApplicationsByStudent = async (req, res) => {
   try {
-    const { studentId } = req.params;
-    const snap = await db.collection("applications").where("studentId", "==", studentId).get();
+    const userId = req.user.id;
+
+    const profileSnap = await db.collection("studentProfiles")
+      .where("userId", "==", userId)
+      .limit(1)
+      .get();
+
+    if (profileSnap.empty) {
+      return res.status(404).json({ message: "Student profile not found" });
+    }
+
+    const studentProfileId = profileSnap.docs[0].id;
+
+    const snap = await db.collection("applications")
+      .where("studentId", "==", studentProfileId)
+      .get();
+
     const applications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", applications });
   } catch (err) {
@@ -87,7 +119,10 @@ export const getApplicationsByStudent = async (req, res) => {
 export const getApplicationsByInstitution = async (req, res) => {
   try {
     const { institutionId } = req.params;
-    const snap = await db.collection("applications").where("institutionId", "==", institutionId).get();
+    const snap = await db.collection("applications")
+      .where("institutionId", "==", institutionId)
+      .get();
+
     const applications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", applications });
   } catch (err) {

@@ -9,22 +9,36 @@ export const createCourse = async (req, res) => {
       return res.status(400).json({ message: "facultyId, institutionId, and courseName are required" });
     }
 
-    // Validate faculty
+    // ✅ Validate faculty
     const facultyDoc = await db.collection("faculties").doc(facultyId).get();
-    if (!facultyDoc.exists) return res.status(404).json({ message: "Faculty not found" });
+    if (!facultyDoc.exists) {
+      return res.status(404).json({ message: "Faculty not found" });
+    }
 
-    // Validate institution
-    const institutionDoc = await db.collection("institutions").doc(institutionId).get();
-    if (!institutionDoc.exists) return res.status(404).json({ message: "Institution not found" });
+    // ✅ Validate institution (corrected collection name)
+    const institutionDoc = await db.collection("institutionProfiles").doc(institutionId).get();
+    if (!institutionDoc.exists) {
+      return res.status(404).json({ message: "Institution not found" });
+    }
 
     const facultyData = facultyDoc.data();
     const institutionData = institutionDoc.data();
 
+    // ✅ Create new course
     const newCourseRef = await db.collection("courses").add({
       facultyId,
       institutionId,
-      facultyInfo: { facultyName: facultyData.facultyName, deanName: facultyData.deanName },
-      institutionInfo: { institutionName: institutionData.name },
+      facultyInfo: {
+        facultyName: facultyData.facultyName,
+        deanName: facultyData.deanName,
+      },
+      institutionInfo: {
+        institutionName: institutionData.institutionName,
+        location: institutionData.location || "",
+        type: institutionData.type || "",
+        contactEmail: institutionData.contactEmail || "",
+        contactPhone: institutionData.contactPhone || "",
+      },
       courseName,
       description: description || "",
       courseCode: courseCode || "",
@@ -40,8 +54,13 @@ export const createCourse = async (req, res) => {
         id: newCourseRef.id,
         facultyId,
         institutionId,
-        facultyInfo: { facultyName: facultyData.facultyName, deanName: facultyData.deanName },
-        institutionInfo: { institutionName: institutionData.name },
+        facultyInfo: {
+          facultyName: facultyData.facultyName,
+          deanName: facultyData.deanName,
+        },
+        institutionInfo: {
+          institutionName: institutionData.institutionName,
+        },
         courseName,
         description,
         courseCode,

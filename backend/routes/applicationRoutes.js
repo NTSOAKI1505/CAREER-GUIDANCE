@@ -1,10 +1,11 @@
+// routes/applicationRoutes.js
 import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
 import {
   createApplication,
   getAllApplications,
   getApplicationById,
-  getApplicationsByStudent,
+  getApplicationsByStudent, // now uses logged-in student's profile
   getApplicationsByInstitution,
   updateApplication,
   deleteApplication,
@@ -16,7 +17,7 @@ router.use(protect);
 // CRUD routes
 router.post("/", createApplication);
 router.get("/", getAllApplications);
-router.get("/student/:studentId", getApplicationsByStudent);
+router.get("/me", getApplicationsByStudent); // student sees only their applications
 router.get("/institution/:institutionId", getApplicationsByInstitution);
 router.get("/:id", getApplicationById);
 router.put("/:id", updateApplication);

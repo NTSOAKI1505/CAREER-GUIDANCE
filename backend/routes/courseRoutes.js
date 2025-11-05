@@ -7,7 +7,7 @@ import {
   updateCourse,
   deleteCourse,
   getCoursesByFaculty,
-} from "../controllers/courseController.js";
+} from "../controllers/courseController.js"; // <- correct path
 
 const router = express.Router();
 router.use(protect);
