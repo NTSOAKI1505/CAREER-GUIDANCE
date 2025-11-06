@@ -1,0 +1,261 @@
+/* ===== Applications Container ===== */
+.applications-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  background-color: #fff8e7;
+  font-family: 'Arial', sans-serif;
+  color: #000;
+}
+
+/* ===== Page Title ===== */
+.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #23BEC8; /* fallback */
+}
+
+/* ===== Toast Notifications ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  z-index: 1000;
+  animation: fadeInOut 4s forwards;
+}
+
+.toast.success { background-color: #23BEC8; }
+.toast.error { background-color: #e74c3c; }
+
+@keyframes fadeInOut {
+  0%, 10% { opacity: 0; transform: translateY(-10px); }
+  20%, 80% { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* ===== User Applications List ===== */
+.user-applications {
+  margin-bottom: 2rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.user-applications h3 {
+  margin-bottom: 1rem;
+  color: #23BEC8;
+}
+
+.user-applications ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.user-applications li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+/* ===== Institution Grid ===== */
+.institutions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.institution-card, .faculty-card, .course-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  background: linear-gradient(to bottom right, #ffffff, #fff8e7);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.institution-card:hover, .faculty-card:hover, .course-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+  background: linear-gradient(145deg, #0a1f44 0%, #ffd700 85%, #0a1f44 100%);
+}
+
+.card-icon {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 2px solid #ffd700;
+}
+
+.institution-card h3, .faculty-card h4, .course-card h5 {
+  font-weight: 700;
+  background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin: 0.3rem 0;
+}
+
+.institution-card p, .faculty-card p, .course-card p {
+  font-size: 0.875rem;
+  color: #374151;
+  text-align: center;
+  margin: 0.2rem 0;
+}
+
+.card-stats {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+/* ===== Expand Button ===== */
+.expand-btn {
+  margin-top: 0.5rem;
+  background: linear-gradient(90deg, #0a1f44 0%, #ffd700 100%);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.expand-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  background: #1aa0a8;
+}
+
+/* ===== Faculties & Courses Grids ===== */
+.faculties-grid {
+  margin-top: 1rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid #23BEC8;
+  display: grid;
+  gap: 1rem;
+}
+
+.courses-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Faculty Card */
+.faculty-card {
+  background: #f0f8f8;
+  padding: 0.8rem;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.faculty-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.faculty-card h4 { color: #23BEC8; }
+.faculty-card p { font-size: 0.85rem; }
+
+/* Course Card */
+.course-card {
+  background: #fff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease;
+}
+
+.course-card:hover { transform: translateY(-2px); }
+.course-card h5 { color: #000; }
+.course-card p { font-size: 0.82rem; }
+
+/* ===== Apply Button ===== */
+.apply-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
+  background-color: #23BEC8;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apply-btn:hover:enabled { background-color: #1aa0a8; }
+.apply-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+
+/* Apply Status */
+.apply-btn.pending {
+  background: linear-gradient(90deg, #fbbf24 0%, #fde68a 100%);
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.apply-btn.approved {
+  background: linear-gradient(90deg, #16a34a 0%, #4ade80 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+.apply-btn.rejected {
+  background: linear-gradient(90deg, #dc2626 0%, #f87171 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+.apply-btn.pending:hover:enabled {
+  background: linear-gradient(90deg, #f59e0b 0%, #fcd34d 100%);
+}
+
+.apply-btn.approved:hover:enabled {
+  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+}
+
+.apply-btn.rejected:hover:enabled {
+  background: linear-gradient(90deg, #b91c1c 0%, #ef4444 100%);
+}
+
+/* ===== Tooltip ===== */
+.tooltip-container { position: relative; display: inline-block; }
+.tooltip-box {
+  visibility: visible;
+  opacity: 0;
+  width: max-content;
+  max-width: 220px;
+  background-color: #23BEC8;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
+
+.tooltip-container:hover .tooltip-box { opacity: 1; }
+
+/* ===== Responsive Grids ===== */
+@media (min-width: 640px) { .institutions-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .institutions-grid { grid-template-columns: repeat(3, 1fr); } }

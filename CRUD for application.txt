@@ -12,10 +12,6 @@ C:\Users\LENONG>curl -X GET http://localhost:5000/api/application/me -H "Authori
 {"status":"success","applications":[{"id":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","applicationDate":{"_seconds":1762321566,"_nanoseconds":422000000},"status":"Pending","remarks":"","createdAt":{"_seconds":1762321566,"_nanoseconds":422000000},"updatedAt":{"_seconds":1762321566,"_nanoseconds":422000000}}]}
 C:\Users\LENONG>
 C:\Users\LENONG>
-C:\Users\LENONG>curl -X GET http://localhost:5000/api/admission/me -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIzMjQxNjMsImV4cCI6MTc2MjkyODk2M30.gwELbZSsI2sGcDKbeWCliZ1Bafbclstg99WWU5Nv4k8"
-{"status":"success","admissions":[{"id":"Z1fX6lEEMs3DggeZcW2A","applicationId":"oZ80UQTyZCMZJLDzRwvE","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","admissionStatus":"Accepted","remarks":"Welcome to Limkokwing University","createdAt":{"_seconds":1762326051,"_nanoseconds":535000000},"updatedAt":{"_seconds":1762326051,"_nanoseconds":535000000}}]}
-C:\Users\LENONG>
-C:\Users\LENONG>
 C:\Users\LENONG>curl -X GET http://localhost:5000/api/application/institution/qG7ZKT7mbqJ3FVkAdC3v -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkVYZk55S3VPSUlWSlhKbTh0UTh2Iiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjIzMjEyMTMsImV4cCI6MTc2MjkyNjAxM30.Osdida2vo6YTBbn1JQx-37esFzhkp0D1x8q1rQTKcW0"
 {"status":"success","applications":[{"id":"coBytq7aKa0htPvOd5wA","studentId":"xORyJcs7beynE7nMY0fb","courseId":"vinSSOawseNPkAiNHfoY","facultyId":"NTJzvYzOGt0SLcpNNR3B","institutionId":"qG7ZKT7mbqJ3FVkAdC3v","applicationDate":{"_seconds":1762321260,"_nanoseconds":609000000},"status":"Pending","remarks":"","createdAt":{"_seconds":1762321260,"_nanoseconds":609000000},"updatedAt":{"_seconds":1762321260,"_nanoseconds":609000000}}]}
 C:\Users\LENONG>

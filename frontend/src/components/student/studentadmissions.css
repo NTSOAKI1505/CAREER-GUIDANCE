@@ -1,0 +1,175 @@
+/* Container */
+.admissions-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  background-color: #fff8e7; /* light cream background */
+}
+
+/* Page header */
+.page-header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header .page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.applications-count {
+  font-size: 1rem;
+  color: #1f2937; /* gray-800 */
+  font-weight: 600;
+}
+
+/* Toast */
+.toast {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  font-weight: 600;
+  z-index: 1000;
+}
+
+.toast.success {
+  background-color: #23BEC8;
+  color: #fff;
+}
+
+.toast.error {
+  background-color: #ef4444; /* red-500 */
+  color: #fff;
+}
+
+/* Admissions grid */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 640px) {
+  .applications-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .applications-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Admission Card */
+.application-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem;
+  background: linear-gradient(to bottom right, #ffffff, #fff8e7);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.application-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+  background: linear-gradient(145deg, #0a1f44 0%, #ffd700 85%, #0a1f44 100%);
+  color: #fff;
+}
+
+.application-card:hover .info-value {
+  color: #fff;
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.application-title h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+}
+
+.status-badge.accepted {
+  background-color: #23BEC8;
+  color: #fff;
+}
+
+.status-badge.rejected {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.status-badge.pending {
+  background-color: #fbbf24;
+  color: #fff;
+}
+
+/* Card content */
+.card-content .info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item.full-width {
+  grid-column: span 2;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #374151; /* gray-700 */
+}
+
+.info-value.remarks {
+  font-style: italic;
+}
+
+/* Loading & empty state */
+.loading-spinner,
+.empty-state {
+  width: 100%;
+  text-align: center;
+  padding: 3rem;
+  color: #1f2937;
+  font-weight: 600;
+}

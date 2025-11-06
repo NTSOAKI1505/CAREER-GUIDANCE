@@ -1,0 +1,511 @@
+/* General container */
+.admissions-container {
+  font-family: Arial, sans-serif;
+  padding: 1rem;
+  background-color: #f9f9f9;
+}
+
+/* Page header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+}
+
+.applications-count {
+  font-size: 1rem;
+  color: #23BEC8;
+}
+
+/* Grid of cards */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+/* Card styling */
+.application-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.application-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background-color: #23BEC8;
+  color: #fff;
+}
+
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status-badge.accepted {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.status-badge.rejected {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.status-badge.pending {
+  background-color: #ffc107;
+  color: #000;
+}
+
+/* Card content */
+.card-content {
+  padding: 1rem;
+  flex: 1;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #000;
+  margin-top: 0.2rem;
+}
+
+.info-value.highlight {
+  color: #23BEC8;
+  font-weight: bold;
+}
+
+.info-item.full-width {
+  grid-column: span 2;
+}
+
+.remarks {
+  font-style: italic;
+}
+
+/* Card actions */
+.card-actions {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.approve-btn {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.approve-btn:hover {
+  background-color: #218838;
+}
+
+.reject-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.reject-btn:hover {
+  background-color: #c82333;
+}
+
+.delete-btn {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #5a6268;
+}
+
+.view-student-btn {
+  background-color: #23BEC8;
+  color: #fff;
+}
+
+.view-student-btn:hover {
+  background-color: #1aa3aa;
+}
+
+/* Loading and empty state */
+.loading-spinner,
+.loading-state {
+  text-align: center;
+  font-size: 1rem;
+  color: #23BEC8;
+  padding: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #555;
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.close-modal-btn {
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: none;
+  color: #000;
+}
+
+.student-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.skill-tag {
+  background-color: #23BEC8;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.resume-link {
+  color: #23BEC8;
+  text-decoration: underline;
+}
+/* Container */
+.admissions-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  background-color: #fff8e7; /* light cream */
+}
+
+/* Page header */
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.applications-count {
+  font-size: 1rem;
+  color: #1f2937;
+  margin-top: 0.5rem;
+}
+
+/* Applications grid */
+.applications-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (min-width: 640px) {
+  .applications-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .applications-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Application Card */
+.application-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 2rem;
+  background: linear-gradient(to bottom right, #ffffff, #fff8e7);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.application-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+  background: linear-gradient(145deg, #0a1f44 0%, #ffd700 85%, #0a1f44 100%);
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.application-title h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #0a1f44 0%, #0a1f44 70%, #ffd700 85%, #0a1f44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: #fff;
+}
+
+.status-badge.accepted {
+  background-color: #28a745;
+}
+
+.status-badge.rejected {
+  background-color: #dc3545;
+}
+
+.status-badge.pending {
+  background-color: #ffc107;
+  color: #000;
+}
+
+/* Card content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.info-value.highlight {
+  color: #23BEC8;
+  font-weight: bold;
+}
+
+/* Card actions */
+.card-actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.5rem 0.9rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.approve-btn {
+  background: linear-gradient(90deg, #28a745 0%, #218838 100%);
+  color: #fff;
+}
+
+.reject-btn {
+  background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+  color: #fff;
+}
+
+.delete-btn {
+  background: linear-gradient(90deg, #6c757d 0%, #5a6268 100%);
+  color: #fff;
+}
+
+.view-student-btn {
+  background: linear-gradient(90deg, #23BEC8 0%, #1aa3aa 100%);
+  color: #fff;
+}
+
+/* Loading and empty state */
+.loading-spinner,
+.loading-state {
+  text-align: center;
+  font-size: 1rem;
+  color: #23BEC8;
+  padding: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #555;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+.close-modal-btn {
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: none;
+  color: #000;
+}
+
+.student-info-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.skill-tag {
+  background: #23BEC8;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+}
+
+.resume-link {
+  color: #23BEC8;
+  text-decoration: underline;
+}
