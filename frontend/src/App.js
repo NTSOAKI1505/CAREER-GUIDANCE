@@ -10,6 +10,7 @@ import StudentProfile from "./components/student/studentprofile";
 import InstitutionProfile from "./components/institution/institutionprofile";
 import CompanyProfile from "./components/company/companyprofile";
 import AdminProfile from "./components/admin/adminprofile";
+import InstitutionFaculty from "./components/institution/InstitutionFaculty";
 import { UserProvider } from "./contexts/UserContext";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/institutionprofile" element={<InstitutionProfile />} />
           <Route path="/companyprofile" element={<CompanyProfile />} />
           <Route path="/adminprofile" element={<AdminProfile />} />
+          <Route path="/faculties" element={<InstitutionFaculty />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
         <Footer />
