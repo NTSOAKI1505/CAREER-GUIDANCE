@@ -5,16 +5,16 @@ import "./navbar.css";
 
 const roleLinks = {
   student: [
-    { label: "Admissions", path: "/admissions" },
-    { label: "Institutions", path: "/Institutions" },
+    { label: "Admissions", path: "/studentadmissions" },
+    { label: "Institutions", path: "/studentapplications" },
     { label: "Jobs", path: "/jobs" },
     { label: "Companies", path: "/Companies" },
     { label: "Doc", path: "/Doc" },
   ],
   institution: [
     { label: "Faculties & Courses", path: "/faculties" },
-    { label: "Applications", path: "/applications" },
-    { label: "Admissions", path: "/admissions" },
+    { label: "Applications", path: "/institutionapplications" },
+    { label: "Admissions", path: "/institutionadmissions" },
     { label: "Jobs", path: "/jobs" },
   ],
   company: [
