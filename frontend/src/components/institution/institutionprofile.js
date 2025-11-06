@@ -1,12 +1,12 @@
-// src/components/AdminProfile.js
+// src/components/InstitutionProfile.js
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
-import "./studentprofile.css";
+import { UserContext } from "../../contexts/UserContext";
+import "../student/studentprofile.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const AdminProfile = () => {
+const InstitutionProfile = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -18,37 +18,52 @@ const AdminProfile = () => {
   const [editMode, setEditMode] = useState(true);
   const fetched = useRef(false);
 
-  // Fetch admin profile once
+  // Fetch institution profile
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
 
     (async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/admin/profile/me`, {
+        const res = await fetch(`${BACKEND_URL}/institution/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
 
         if (res.ok && data.profiles?.length) {
-          setProfile(data.profiles[0]);
+          const p = data.profiles[0];
+          setProfile({
+            id: p.id || "",
+            userId: p.userId || user.id,
+            userInfo: user,
+            institutionName: p.institutionName || "",
+            location: p.location || "",
+            type: p.type || "",
+            description: p.description || "",
+            website: p.website || "",
+            logoUrl: p.logoUrl || "",
+            contactEmail: p.contactEmail || user.email || "",
+            contactPhone: p.contactPhone || "",
+          });
           setEditMode(false);
         } else {
           setProfile({
             userId: user.id,
             userInfo: user,
-            department: "",
-            roleInAdmin: "",
-            bio: "",
+            institutionName: "",
+            location: "",
+            type: "",
+            description: "",
+            website: "",
+            logoUrl: "",
             contactEmail: user.email || "",
             contactPhone: "",
-            profilePic: "",
           });
           setEditMode(true);
         }
       } catch (err) {
         console.error(err);
-        setError("Failed to load admin profile");
+        setError("Failed to load profile");
       } finally {
         setLoading(false);
       }
@@ -62,8 +77,8 @@ const AdminProfile = () => {
     e.preventDefault();
     if (!profile) return;
 
-    if (!profile.department || !profile.roleInAdmin || !profile.contactEmail || !profile.contactPhone) {
-      setError("Department, role, email, and phone are required.");
+    if (!profile.institutionName || !profile.contactEmail || !profile.contactPhone) {
+      setError("Institution name, email, and phone are required.");
       return;
     }
 
@@ -73,8 +88,8 @@ const AdminProfile = () => {
 
     try {
       const url = profile.id
-        ? `${BACKEND_URL}/admin/profile/${profile.id}`
-        : `${BACKEND_URL}/admin/profile`;
+        ? `${BACKEND_URL}/institution/profile/${profile.id}`
+        : `${BACKEND_URL}/institution/profile`;
       const method = profile.id ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -89,8 +104,8 @@ const AdminProfile = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
-      setProfile(data.profile);
-      setMessage("✅ Admin profile saved successfully!");
+      setProfile((prev) => ({ ...prev, id: data.profile.id || prev.id }));
+      setMessage("✅ Profile saved successfully!");
       setEditMode(false);
     } catch (err) {
       setError(err.message);
@@ -103,25 +118,30 @@ const AdminProfile = () => {
     return (
       <div className="loader-wrapper">
         <div className="spinner"></div>
-        <p>Loading Admin Profile...</p>
+        <p>Loading Institution Profile...</p>
       </div>
     );
   }
 
-  if (!profile) return <div className="error">Admin profile not found</div>;
+  if (!profile) return <div className="error">Profile not found</div>;
+
+  const inputFields = [
+    { name: "institutionName", placeholder: "Institution Name" },
+    { name: "contactEmail", placeholder: "Email", type: "email" },
+    { name: "contactPhone", placeholder: "Phone" },
+    { name: "location", placeholder: "Location" },
+    { name: "type", placeholder: "Type (University, College, etc.)" },
+    { name: "website", placeholder: "Website URL" },
+  ];
 
   return (
     <div className="profile-wrapper">
       <div className="profile-header">
-        <h1>Admin Profile</h1>
+        <h1>Institution Profile</h1>
         {!editMode && (
           <div className="profile-actions-view">
-            <button className="edit-btn" onClick={() => setEditMode(true)}>
-              Edit
-            </button>
-            <button className="later-btn" onClick={() => navigate("/")}>
-              Cancel
-            </button>
+            <button className="edit-btn" onClick={() => setEditMode(true)}>Edit</button>
+            <button className="later-btn" onClick={() => navigate("/")}>Cancel</button>
           </div>
         )}
       </div>
@@ -133,42 +153,20 @@ const AdminProfile = () => {
         <div className="profile-columns">
           <div className="profile-column">
             <div className="profile-card">
-              <h3>Admin Info</h3>
+              <h3>Institution Info</h3>
               <img
                 loading="lazy"
-                src={profile.profilePic || "https://via.placeholder.com/150"}
-                alt="Profile Pic"
+                src={profile.logoUrl || "https://via.placeholder.com/150"}
+                alt="Logo"
                 className="profile-image-large"
               />
-              <p><strong>Department:</strong> {profile.department || "N/A"}</p>
-              <p><strong>Role:</strong> {profile.roleInAdmin || "N/A"}</p>
-              <p><strong>Email:</strong> {profile.contactEmail || "N/A"}</p>
-              <p><strong>Phone:</strong> {profile.contactPhone || "N/A"}</p>
-            </div>
-
-            <div className="profile-card">
-              <h3>Uploads</h3>
-              <input
-                type="text"
-                name="profilePic"
-                placeholder="Profile Picture URL"
-                value={profile.profilePic || ""}
-                onChange={handleChange}
-                disabled={!editMode}
-              />
-            </div>
-          </div>
-
-          <div className="profile-column">
-            <div className="profile-card">
-              <h3>Details</h3>
-              {["department", "roleInAdmin", "contactPhone", "contactEmail"].map((field) => (
+              {inputFields.slice(0, 3).map((f) => (
                 <input
-                  key={field}
-                  type="text"
-                  name={field}
-                  placeholder={field.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
-                  value={profile[field] || ""}
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
                   onChange={handleChange}
                   disabled={!editMode}
                 />
@@ -176,11 +174,39 @@ const AdminProfile = () => {
             </div>
 
             <div className="profile-card">
-              <h3>Bio</h3>
+              <h3>Uploads</h3>
+              <input
+                type="text"
+                name="logoUrl"
+                placeholder="Logo URL"
+                value={profile.logoUrl || ""}
+                onChange={handleChange}
+                disabled={!editMode}
+              />
+              {profile.logoUrl && (
+                <img src={profile.logoUrl} alt="Logo Preview" className="profile-image" loading="lazy"/>
+              )}
+            </div>
+          </div>
+
+          <div className="profile-column">
+            <div className="profile-card">
+              <h3>Details</h3>
+              {inputFields.slice(3).map((f) => (
+                <input
+                  key={f.name}
+                  type={f.type || "text"}
+                  name={f.name}
+                  placeholder={f.placeholder}
+                  value={profile[f.name] || ""}
+                  onChange={handleChange}
+                  disabled={!editMode}
+                />
+              ))}
               <textarea
-                name="bio"
-                placeholder="Write about yourself..."
-                value={profile.bio || ""}
+                name="description"
+                placeholder="Description"
+                value={profile.description || ""}
                 onChange={handleChange}
                 disabled={!editMode}
               />
@@ -203,4 +229,4 @@ const AdminProfile = () => {
   );
 };
 
-export default AdminProfile;
+export default InstitutionProfile;
