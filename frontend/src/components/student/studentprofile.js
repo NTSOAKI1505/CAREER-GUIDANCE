@@ -127,9 +127,9 @@ const StudentProfile = () => {
   ];
 
   const rightFields = [
-    { name: "institution", placeholder: "Institution" },
-    { name: "course", placeholder: "Course" },
-    { name: "yearOfStudy", placeholder: "Year of Study", type: "number" },
+    { name: "institution", placeholder: "High school" },
+    { name: "course", placeholder: "Subject preffered" },
+    { name: "yearOfStudy", placeholder: "Year of complition", type: "number" },
   ];
 
   return (
@@ -206,7 +206,7 @@ const StudentProfile = () => {
               <input
                 type="text"
                 name="skills"
-                placeholder="Skills (comma separated)"
+                placeholder="credits (comma separated)"
                 value={profile.skills?.join(", ") || ""}
                 onChange={handleSkillsChange}
                 disabled={!editMode}

@@ -7,7 +7,7 @@ const roleLinks = {
   student: [
     { label: "Admissions", path: "/studentadmissions" },
     { label: "Institutions", path: "/studentapplications" },
-    { label: "Jobs", path: "/jobs" },
+    { label: "Jobs", path: "/jobapplications" },
     { label: "Companies", path: "/Companies" },
     { label: "Doc", path: "/Doc" },
   ],
@@ -15,10 +15,10 @@ const roleLinks = {
     { label: "Faculties & Courses", path: "/faculties" },
     { label: "Applications", path: "/institutionapplications" },
     { label: "Admissions", path: "/institutionadmissions" },
-    { label: "Jobs", path: "/jobs" },
+    { label: "Jobs", path: "/jobapplications" },
   ],
   company: [
-    { label: "Post_Jobs", path: "/PostJobs" },
+    { label: "Post Jobs", path: "/company/jobs" },
     { label: "Job Applications", path: "/jobapplications" },
     { label: "Alumni", path: "/Alumni" },
   ],
