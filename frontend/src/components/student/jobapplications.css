@@ -90,3 +90,45 @@
 .cancel-btn {
   background: #ccc;
 }
+/* Container for all job cards */
+.student-jobs-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Individual job card */
+.job-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Job title */
+.job-title {
+  color: #23BEC8; /* PrimeAI Teal */
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Description and requirements */
+.job-description,
+.job-requirements {
+  font-size: 0.9rem;
+  color: #000000;
+  margin: 0.25rem 0;
+}
+
+/* Optional: strong labels styling */
+.job-card strong {
+  color: #000000;
+}

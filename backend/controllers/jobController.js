@@ -13,7 +13,7 @@ const getCompanyId = async (userId) => {
   };
 };
 
-// ✅ Create a new job
+// ✅ Create a new job (Company only)
 export const createJob = async (req, res) => {
   try {
     const company = await getCompanyId(req.user.id);
@@ -45,31 +45,19 @@ export const createJob = async (req, res) => {
   }
 };
 
-// ✅ Get jobs (company / admin)
-export const getJobs = async (req, res) => {
+// ✅ Get all jobs (any logged-in user / general)
+export const getAllJobs = async (req, res) => {
   try {
-    let snap;
-    if (req.user.role === "company") {
-      const company = await getCompanyId(req.user.id);
-      if (!company) return res.status(404).json({ message: "Company profile not found" });
-      snap = await db.collection("jobs").where("companyId", "==", company.companyId).get();
-    } else if (req.user.role === "admin") {
-      snap = await db.collection("jobs").get();
-    } else {
-      return res.status(403).json({ message: "Access denied" });
-    }
-
-    if (snap.empty) return res.status(404).json({ message: "No jobs found" });
-
-    const jobs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const jobsSnap = await db.collection("jobs").get();
+    const jobs = jobsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", jobs });
   } catch (err) {
-    console.error("Get jobs error:", err);
+    console.error("Get all jobs error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// ✅ Get job by ID
+// ✅ Get job by ID (Company/Admin)
 export const getJobById = async (req, res) => {
   try {
     const doc = await db.collection("jobs").doc(req.params.id).get();
@@ -114,6 +102,20 @@ export const deleteJob = async (req, res) => {
     res.json({ status: "success", message: "Job deleted successfully" });
   } catch (err) {
     console.error("Delete job error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+// ✅ Get jobs for logged-in company only
+export const getCompanyJobs = async (req, res) => {
+  try {
+    const company = await getCompanyId(req.user.id);
+    if (!company) return res.status(404).json({ message: "Company profile not found" });
+
+    const snap = await db.collection("jobs").where("companyId", "==", company.companyId).get();
+    const jobs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json({ status: "success", jobs });
+  } catch (err) {
+    console.error("Get company jobs error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
