@@ -9,7 +9,7 @@ const roleLinks = {
     { label: "Institutions", path: "/studentapplications" },
     { label: "Jobs", path: "/jobapplications" },
     { label: "Companies", path: "/Companies" },
-    { label: "Doc", path: "/Doc" },
+    { label: "Documents", path: "/Documents" },
   ],
   institution: [
     { label: "Faculties & Courses", path: "/faculties" },
@@ -19,7 +19,7 @@ const roleLinks = {
   ],
   company: [
     { label: "Post Jobs", path: "/company/jobs" },
-    { label: "Job Applications", path: "/jobapplications" },
+    { label: "Job Applications", path: "/company/applications" },
     { label: "Alumni", path: "/Alumni" },
   ],
   admin: [
@@ -97,8 +97,9 @@ function Navbar() {
         {!user && (
           <>
             <li><button onClick={() => navigate("/")}>Home</button></li>
-            <li><button onClick={() => navigate("/jobs")}>Jobs</button></li>
-            <li><button onClick={() => navigate("/applications")}>Applications</button></li>
+            <li><button onClick={() => navigate("/student")}>student</button></li>
+            <li><button onClick={() => navigate("/institution")}>institution</button></li>
+             <li><button onClick={() => navigate("/company")}>company</button></li>
           </>
         )}
 

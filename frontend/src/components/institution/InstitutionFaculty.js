@@ -306,8 +306,8 @@ function InstitutionFaculty() {
               </div>
 
               <div className="faculty-actions">
-                <button onClick={() => handleEdit(f)} title="Edit">✏️</button>
-                <button onClick={() => handleDelete(f.id)} title="Delete">🗑️</button>
+                <button onClick={() => handleEdit(f)} title="Edit"></button>
+                <button onClick={() => handleDelete(f.id)} title="Delete"></button>
               </div>
             </div>
 
@@ -334,10 +334,10 @@ function InstitutionFaculty() {
                             }}
                             title="Edit Course"
                           >
-                            ✏️
+                            
                           </button>
                           <button onClick={() => handleDeleteCourse(f.id, c.id)} title="Delete Course">
-                            🗑️
+                            
                           </button>
                         </div>
                       </div>

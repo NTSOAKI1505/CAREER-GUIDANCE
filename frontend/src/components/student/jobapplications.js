@@ -2,90 +2,181 @@ import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import "./jobapplications.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const StudentJobs = () => {
   const { token } = useContext(UserContext);
-  const [companyJobs, setCompanyJobs] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalData, setModalData] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [applyingJobId, setApplyingJobId] = useState(null);
 
+  // Fetch jobs and company info
   useEffect(() => {
-    const fetchJobsAndCompanies = async () => {
+    const fetchJobs = async () => {
       try {
-        // Fetch all jobs
         const jobsRes = await fetch(`${BACKEND_URL}/jobs`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const jobsData = await jobsRes.json();
-
         if (jobsData.status !== "success" || !jobsData.jobs.length) {
-          setCompanyJobs([]);
+          setJobs([]);
           return;
         }
 
-        const jobs = jobsData.jobs;
+        const allJobs = await Promise.all(
+          jobsData.jobs.map(async (job) => {
+            const res = await fetch(`${BACKEND_URL}/company/profile/${job.companyId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const companyData = await res.json();
+            return {
+              ...job,
+              companyName: companyData.profile?.companyName || "Unknown Company",
+              companyInfo: companyData.profile || null,
+            };
+          })
+        );
 
-        // Fetch all companies in one request
-        const companiesRes = await fetch(`${BACKEND_URL}/companies`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const companiesData = await companiesRes.json();
-
-        if (companiesData.status !== "success" || !companiesData.companies.length) {
-          setCompanyJobs([]);
-          return;
-        }
-
-        // Map companyId -> companyName
-        const companyMap = companiesData.companies.reduce((acc, company) => {
-          acc[company.id] = company.name;
-          return acc;
-        }, {});
-
-        // Group jobs by companyId
-        const companyIdsWithJobs = [...new Set(jobs.map(job => job.companyId))];
-        const groupedJobs = companyIdsWithJobs.map(companyId => ({
-          companyId,
-          companyName: companyMap[companyId] || "Unknown Company",
-          jobs: jobs.filter(job => job.companyId === companyId)
-        }));
-
-        setCompanyJobs(groupedJobs);
-
+        setJobs(allJobs);
       } catch (err) {
         console.error("Error fetching jobs or companies:", err);
-        setCompanyJobs([]);
+        setJobs([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJobsAndCompanies();
+    fetchJobs();
   }, [token]);
 
+  // Fetch current user's job applications
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/jobApplications/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.status === "success") setApplications(data.applications);
+      } catch (err) {
+        console.error("Error fetching applications:", err);
+      }
+    };
+
+    fetchApplications();
+  }, [token]);
+
+  const getApplicationStatus = (jobId) => {
+    const app = applications.find(a => a.jobId === jobId);
+    return app ? app.status : null; // pending, reviewed, approved, rejected
+  };
+
+  // Apply for job
+  const handleApply = async (job) => {
+    if (getApplicationStatus(job.id)) return; // prevent re-apply
+    setApplyingJobId(job.id);
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/jobApplications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ jobId: job.id }),
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        setApplications(prev => [...prev, data.application]);
+      } else {
+        alert(data.message || "Failed to apply");
+      }
+    } catch (err) {
+      console.error("Error applying:", err);
+      alert("Error applying for job");
+    } finally {
+      setApplyingJobId(null);
+    }
+  };
+
+  const handleViewCompany = (companyInfo) => setModalData(companyInfo);
+  const closeModal = () => setModalData(null);
+
   if (loading) return <p>Loading jobs...</p>;
-  if (!companyJobs.length) return <p>No jobs available.</p>;
+  if (!jobs.length) return <p>No jobs available.</p>;
 
   return (
     <div className="student-jobs-container">
-      {companyJobs.map(({ companyId, companyName, jobs }) => (
-        <div key={companyId} className="company-section">
-          <h2 className="company-title">{companyName}</h2>
-          <div className="company-jobs">
-            {jobs.map(job => (
-              <div key={job.id} className="job-card">
-                <h3 className="job-title">{job.title}</h3>
-                <p><strong>Location:</strong> {job.location}</p>
-                <p><strong>Type:</strong> {job.jobType}</p>
-                <p><strong>Salary:</strong> {job.salaryRange}</p>
-                <p><strong>Deadline:</strong> {new Date(job.applicationDeadline._seconds * 1000).toLocaleDateString()}</p>
-                <p className="job-description">{job.description}</p>
-                <p className="job-requirements"><strong>Requirements:</strong> {job.requirements.join(", ")}</p>
-              </div>
-            ))}
+      {jobs.map((job) => {
+        const status = getApplicationStatus(job.id);
+        return (
+          <div key={job.id} className="job-card">
+            <h4 className="company-name">{job.companyName}</h4>
+            <h3 className="job-title">{job.title}</h3>
+            <p><strong>Location:</strong> {job.location}</p>
+            <p><strong>Type:</strong> {job.jobType}</p>
+            <p><strong>Salary:</strong> {job.salaryRange || "N/A"}</p>
+            <p>
+              <strong>Deadline:</strong>{" "}
+              {job.applicationDeadline
+                ? new Date(job.applicationDeadline._seconds * 1000).toLocaleDateString()
+                : "N/A"}
+            </p>
+            <p className="job-description">{job.description}</p>
+            <p className="job-requirements">
+              <strong>Requirements:</strong>{" "}
+              {job.requirements?.length ? job.requirements.join(", ") : "None"}
+            </p>
+
+            <div className="job-buttons">
+              <button
+                className="apply-btn"
+                disabled={!!status || applyingJobId === job.id}
+                onClick={() => handleApply(job)}
+              >
+                {applyingJobId === job.id
+                  ? "Applying..."
+                  : status === "pending"
+                  ? "Applied (Pending)"
+                  : status === "reviewed"
+                  ? "Reviewed"
+                  : status === "approved"
+                  ? "Approved ✅"
+                  : status === "rejected"
+                  ? "Rejected ❌"
+                  : "Apply"}
+              </button>
+
+              {job.companyInfo && (
+                <button
+                  className="view-company-btn"
+                  onClick={() => handleViewCompany(job.companyInfo)}
+                >
+                  View Company Info
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Company Info Modal */}
+      {modalData && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{modalData.companyName}</h3>
+            <p><strong>Location:</strong> {modalData.location}</p>
+            <p><strong>Industry:</strong> {modalData.industry}</p>
+            <p><strong>Description:</strong> {modalData.description}</p>
+            <p><strong>Website:</strong> <a href={modalData.website} target="_blank" rel="noreferrer">{modalData.website}</a></p>
+            <p><strong>Contact Email:</strong> {modalData.contactEmail}</p>
+            <p><strong>Contact Phone:</strong> {modalData.contactPhone}</p>
+            <button className="cancel-btn" onClick={closeModal}>Close</button>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };

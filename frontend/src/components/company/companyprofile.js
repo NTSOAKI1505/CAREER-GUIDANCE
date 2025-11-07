@@ -18,7 +18,7 @@ const CompanyProfile = () => {
   const [editMode, setEditMode] = useState(true);
   const fetched = useRef(false);
 
-  // Fetch company profile
+  
   useEffect(() => {
     if (!token || !user || fetched.current) return;
     fetched.current = true;
@@ -92,7 +92,7 @@ const CompanyProfile = () => {
       if (!res.ok) throw new Error(data.message || "Failed to save profile");
 
       setProfile(data.profile);
-      setMessage("✅ Company profile saved successfully!");
+      setMessage(" Company profile saved successfully!");
       setEditMode(false);
     } catch (err) {
       setError(err.message);

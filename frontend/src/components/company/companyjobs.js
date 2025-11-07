@@ -9,7 +9,7 @@ const CompanyJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [saving, setSaving] = useState(false); // 🟢 NEW: Tracks "saving"/"creating" state
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,11 +22,19 @@ const CompanyJobs = () => {
   const [editingJobId, setEditingJobId] = useState(null);
   const [message, setMessage] = useState("");
 
-  // Fetch jobs
+  // Helper to format deadline
+  const formatDeadline = (deadline) => {
+    if (!deadline) return "N/A";
+    if (typeof deadline === "string") return new Date(deadline).toLocaleDateString();
+    if (deadline._seconds) return new Date(deadline._seconds * 1000).toLocaleDateString();
+    return "N/A";
+  };
+
+  // Fetch logged-in company jobs
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BACKEND_URL}/jobs/me`, {
+      const res = await fetch(`${BACKEND_URL}/jobs/company/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -40,7 +48,15 @@ const CompanyJobs = () => {
 
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [token]);
+
+  // Auto-clear messages
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(""), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,8 +66,6 @@ const CompanyJobs = () => {
   // Create or update job
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // 🟢 Prevent double submit
     if (saving) return;
     setSaving(true);
 
@@ -63,7 +77,9 @@ const CompanyJobs = () => {
 
       const payload = {
         ...formData,
-        requirements: formData.requirements.split(",").map((r) => r.trim()),
+        requirements: formData.requirements
+          ? formData.requirements.split(",").map((r) => r.trim())
+          : [],
       };
 
       const res = await fetch(url, {
@@ -97,22 +113,24 @@ const CompanyJobs = () => {
       console.error("Error saving job:", error);
       setMessage("Error saving job. Try again.");
     } finally {
-      setSaving(false); // 🟢 Reset saving state
+      setSaving(false);
     }
   };
 
   const handleEdit = (job) => {
     setEditingJobId(job.id);
     setFormData({
-      title: job.title,
-      description: job.description,
-      requirements: job.requirements.join(", "),
-      location: job.location,
-      jobType: job.jobType,
-      salaryRange: job.salaryRange,
-      applicationDeadline: new Date(job.applicationDeadline._seconds * 1000)
-        .toISOString()
-        .split("T")[0],
+      title: job.title || "",
+      description: job.description || "",
+      requirements: (job.requirements || []).join(", "),
+      location: job.location || "",
+      jobType: job.jobType || "",
+      salaryRange: job.salaryRange || "",
+      applicationDeadline: job.applicationDeadline
+        ? new Date(job.applicationDeadline._seconds * 1000)
+            .toISOString()
+            .split("T")[0]
+        : "",
     });
     setShowModal(true);
   };
@@ -152,9 +170,7 @@ const CompanyJobs = () => {
     <div className="company-jobs-container">
       <div className="jobs-header">
         <h2>Manage Job Listings</h2>
-        <button className="add-job-btn" onClick={handleAddJob}>
-          +
-        </button>
+        <button className="add-job-btn" onClick={handleAddJob}>+</button>
       </div>
 
       {message && <p className="success-message">{message}</p>}
@@ -170,18 +186,13 @@ const CompanyJobs = () => {
               <h3>{job.title}</h3>
               <p><strong>Location:</strong> {job.location}</p>
               <p><strong>Type:</strong> {job.jobType}</p>
-              <p><strong>Salary:</strong> {job.salaryRange}</p>
-              <p>
-                <strong>Deadline:</strong>{" "}
-                {new Date(job.applicationDeadline._seconds * 1000).toLocaleDateString()}
-              </p>
+              <p><strong>Salary:</strong> {job.salaryRange || "N/A"}</p>
+              <p><strong>Deadline:</strong> {formatDeadline(job.applicationDeadline)}</p>
               <p><strong>Description:</strong> {job.description}</p>
-              <p><strong>Requirements:</strong> {job.requirements.join(", ")}</p>
+              <p><strong>Requirements:</strong> {(job.requirements || []).join(", ")}</p>
               <div className="job-actions">
                 <button onClick={() => handleEdit(job)}>Edit</button>
-                <button onClick={() => handleDelete(job.id)} className="delete-btn">
-                  Delete
-                </button>
+                <button onClick={() => handleDelete(job.id)} className="delete-btn">Delete</button>
               </div>
             </div>
           ))}
@@ -194,78 +205,18 @@ const CompanyJobs = () => {
           <div className="modal">
             <h3>{editingJobId ? "Edit Job" : "Create Job"}</h3>
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="title"
-                placeholder="Job Title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-              />
-              <textarea
-                name="description"
-                placeholder="Job Description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="requirements"
-                placeholder="Requirements (comma separated)"
-                value={formData.requirements}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                value={formData.location}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="jobType"
-                placeholder="Job Type (e.g. Full-time)"
-                value={formData.jobType}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="salaryRange"
-                placeholder="Salary Range"
-                value={formData.salaryRange}
-                onChange={handleChange}
-              />
-              <input
-                type="date"
-                name="applicationDeadline"
-                value={formData.applicationDeadline}
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="title" placeholder="Job Title" value={formData.title} onChange={handleChange} required />
+              <textarea name="description" placeholder="Job Description" value={formData.description} onChange={handleChange} required />
+              <input type="text" name="requirements" placeholder="Requirements (comma separated)" value={formData.requirements} onChange={handleChange} required />
+              <input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} required />
+              <input type="text" name="jobType" placeholder="Job Type (e.g. Full-time)" value={formData.jobType} onChange={handleChange} required />
+              <input type="text" name="salaryRange" placeholder="Salary Range" value={formData.salaryRange} onChange={handleChange} />
+              <input type="date" name="applicationDeadline" value={formData.applicationDeadline} onChange={handleChange} required />
               <div className="modal-actions">
-                {/* 🟢 Disable button while saving */}
                 <button type="submit" disabled={saving}>
-                  {saving
-                    ? editingJobId
-                      ? "Updating..."
-                      : "Creating..."
-                    : editingJobId
-                    ? "Update"
-                    : "Create"}
+                  {saving ? (editingJobId ? "Updating..." : "Creating...") : (editingJobId ? "Update" : "Create")}
                 </button>
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => setShowModal(false)}
-                  disabled={saving} // 🟢 Prevent closing while saving
-                >
-                  Cancel
-                </button>
+                <button type="button" className="cancel-btn" onClick={() => setShowModal(false)} disabled={saving}>Cancel</button>
               </div>
             </form>
           </div>

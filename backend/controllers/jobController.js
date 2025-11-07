@@ -1,33 +1,49 @@
-import { db } from "../config/db.js";
+import { db } from "../config/db.js"; // Firestore connection
 
-// ✅ Helper: get companyId from logged-in user
-const getCompanyId = async (userId) => {
-  const profileSnap = await db.collection("companyProfiles")
-                              .where("userId", "==", userId)
-                              .limit(1)
-                              .get();
-  if (profileSnap.empty) return null;
-  return { 
-    companyId: profileSnap.docs[0].id, 
-    companyData: profileSnap.docs[0].data() 
-  };
+// ✅ Helper: get company info from logged-in user
+const getCompanyProfile = async (userId) => {
+  if (!userId) return null;
+  const snap = await db
+    .collection("companyProfiles")
+    .where("userId", "==", userId)
+    .limit(1)
+    .get();
+  if (snap.empty) return null;
+  return { id: snap.docs[0].id, data: snap.docs[0].data() };
 };
 
-// ✅ Create a new job (Company only)
+// ✅ Create Job (linked to Company)
 export const createJob = async (req, res) => {
   try {
-    const company = await getCompanyId(req.user.id);
+    const company = await getCompanyProfile(req.user?.id);
     if (!company) return res.status(404).json({ message: "Company profile not found" });
 
-    const { title, description, requirements, location, jobType, salaryRange, applicationDeadline } = req.body;
-    if (!title || !description) return res.status(400).json({ message: "Title and description are required" });
+    const {
+      title,
+      description,
+      requirements,
+      location,
+      jobType,
+      salaryRange,
+      applicationDeadline,
+    } = req.body;
+
+    if (!title || !description)
+      return res.status(400).json({ message: "Title and description are required" });
 
     const newJobRef = await db.collection("jobs").add({
-      companyId: company.companyId,
+      companyId: company.id,
+      companyInfo: {
+        companyName: company.data.companyName,
+        location: company.data.location,
+        type: company.data.type || "",
+        contactEmail: company.data.contactEmail || "",
+        contactPhone: company.data.contactPhone || "",
+      },
       title,
       description,
       requirements: requirements || [],
-      location: location || company.companyData.location,
+      location: location || company.data.location,
       jobType: jobType || "Full-time",
       salaryRange: salaryRange || "",
       applicationDeadline: applicationDeadline ? new Date(applicationDeadline) : null,
@@ -37,7 +53,22 @@ export const createJob = async (req, res) => {
 
     res.status(201).json({
       status: "success",
-      job: { id: newJobRef.id, companyId: company.companyId, title, description, requirements, location: location || company.companyData.location, jobType: jobType || "Full-time", salaryRange: salaryRange || "", applicationDeadline },
+      job: {
+        id: newJobRef.id,
+        companyId: company.id,
+        companyInfo: {
+          companyName: company.data.companyName,
+          location: company.data.location,
+          type: company.data.type || "",
+        },
+        title,
+        description,
+        requirements: requirements || [],
+        location: location || company.data.location,
+        jobType: jobType || "Full-time",
+        salaryRange: salaryRange || "",
+        applicationDeadline,
+      },
     });
   } catch (err) {
     console.error("Create job error:", err);
@@ -45,11 +76,11 @@ export const createJob = async (req, res) => {
   }
 };
 
-// ✅ Get all jobs (any logged-in user / general)
+// ✅ Get all jobs
 export const getAllJobs = async (req, res) => {
   try {
-    const jobsSnap = await db.collection("jobs").get();
-    const jobs = jobsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const snap = await db.collection("jobs").get();
+    const jobs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json({ status: "success", jobs });
   } catch (err) {
     console.error("Get all jobs error:", err);
@@ -57,7 +88,7 @@ export const getAllJobs = async (req, res) => {
   }
 };
 
-// ✅ Get job by ID (Company/Admin)
+// ✅ Get job by ID
 export const getJobById = async (req, res) => {
   try {
     const doc = await db.collection("jobs").doc(req.params.id).get();
@@ -69,18 +100,20 @@ export const getJobById = async (req, res) => {
   }
 };
 
-// ✅ Update job (Company only)
+// ✅ Update job
 export const updateJob = async (req, res) => {
   try {
-    const company = await getCompanyId(req.user.id);
+    const company = await getCompanyProfile(req.user?.id);
     if (!company) return res.status(404).json({ message: "Company profile not found" });
 
     const jobDoc = await db.collection("jobs").doc(req.params.id).get();
     if (!jobDoc.exists) return res.status(404).json({ message: "Job not found" });
-    if (jobDoc.data().companyId !== company.companyId) return res.status(403).json({ message: "Not authorized" });
+    if (jobDoc.data().companyId !== company.id)
+      return res.status(403).json({ message: "Not authorized" });
 
     await db.collection("jobs").doc(req.params.id).update({ ...req.body, updatedAt: new Date() });
     const updatedDoc = await db.collection("jobs").doc(req.params.id).get();
+
     res.json({ status: "success", job: { id: updatedDoc.id, ...updatedDoc.data() } });
   } catch (err) {
     console.error("Update job error:", err);
@@ -88,15 +121,16 @@ export const updateJob = async (req, res) => {
   }
 };
 
-// ✅ Delete job (Company only)
+// ✅ Delete job
 export const deleteJob = async (req, res) => {
   try {
-    const company = await getCompanyId(req.user.id);
+    const company = await getCompanyProfile(req.user?.id);
     if (!company) return res.status(404).json({ message: "Company profile not found" });
 
     const jobDoc = await db.collection("jobs").doc(req.params.id).get();
     if (!jobDoc.exists) return res.status(404).json({ message: "Job not found" });
-    if (jobDoc.data().companyId !== company.companyId) return res.status(403).json({ message: "Not authorized" });
+    if (jobDoc.data().companyId !== company.id)
+      return res.status(403).json({ message: "Not authorized" });
 
     await db.collection("jobs").doc(req.params.id).delete();
     res.json({ status: "success", message: "Job deleted successfully" });
@@ -105,14 +139,16 @@ export const deleteJob = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-// ✅ Get jobs for logged-in company only
+
+// ✅ Get jobs for logged-in company
 export const getCompanyJobs = async (req, res) => {
   try {
-    const company = await getCompanyId(req.user.id);
+    const company = await getCompanyProfile(req.user?.id);
     if (!company) return res.status(404).json({ message: "Company profile not found" });
 
-    const snap = await db.collection("jobs").where("companyId", "==", company.companyId).get();
-    const jobs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const snap = await db.collection("jobs").where("companyId", "==", company.id).get();
+    const jobs = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
     res.json({ status: "success", jobs });
   } catch (err) {
     console.error("Get company jobs error:", err);
