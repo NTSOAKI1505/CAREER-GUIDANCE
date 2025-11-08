@@ -6,3 +6,15 @@ C:\Users\SMART TECH HUB>
 C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"bob@gmail.com\",\"password\":\"123456\"}"
 {"status":"success","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IllKZnk1UnB2cENCQnB2RW5SZGFrIiwicm9sZSI6InN0dWRlbnQiLCJpYXQiOjE3NjA4OTEzMzgsImV4cCI6MTc2MTQ5NjEzOH0.-R8YLvxbMZKIqSqchjkrTps32v_sBw0-qRquMs7DYuI","user":{"id":"YJfy5RpvpCBBpvEnRdak","firstName":"Bob","lastName":"Brown","email":"bob@gmail.com","role":"student"}}
 C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X PATCH http://localhost:5000/api/auth/change-password -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InYyaXdpb1FNWGhONkdrYldSeTREIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYyNjMwMzk0LCJleHAiOjE3NjMyMzUxOTR9.QfPV44gpENmCBrkJ11umO8Bh2yKhSw1yJQ3VLe4N17M" -d "{\"currentPassword\":\"Lnna@123456\",\"newPassword\":\"Lnna@12345\",\"newPasswordConfirm\":\"Lnna@12345\"}"
+{"status":"success","message":"Password updated successfully"}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/auth/forgot-password -H "Content-Type: application/json" -d "{\"email\":\"ntsoakikasa@gmail.com\"}"
+{"status":"success","message":"Token generated. Use this token to reset password.","resetToken":"c21ad586359ce9fbe9c27c7e2cf8ba986bfbcd8a5c97bb9ee8d1ac2e5152a85e","resetURL":"http://localhost:5000/reset-password/c21ad586359ce9fbe9c27c7e2cf8ba986bfbcd8a5c97bb9ee8d1ac2e5152a85e"}
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>curl -X PATCH http://localhost:5000/api/auth/reset-password -H "Content-Type: application/json" -d "{\"token\":\"5a5a32c9a78cb0042c3492a066fec497e6c5f4307423008b46c0be06a7b584c8\",\"newPassword\":\"Lnna@123456\",\"newPasswordConfirm\":\"Lnna@123456\"}"
+{"status":"success","message":"Password reset successfully"}
+C:\Users\SMART TECH HUB>

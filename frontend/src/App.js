@@ -6,6 +6,9 @@ import Navbar from "./components/default/navbar";
 import Footer from "./components/default/footer";
 import Login from "./components/auth/login";
 import Signup from "./components/auth/signup";
+import ChangePassword from "./components/auth/changePassword";
+import ForgotPassword from "./components/auth/forgotPassword";
+import ResetPassword from "./components/auth/resetPassword";
 import StudentProfile from "./components/student/studentprofile";
 import InstitutionProfile from "./components/institution/institutionprofile";
 import CompanyProfile from "./components/company/companyprofile";
@@ -18,6 +21,7 @@ import StudentAdmissions from "./components/student/studentadmissions";
 import CompanyJobs from  "./components/company/companyjobs";
 import JobApplications from "./components/student/jobapplications";
 import CompanyApplications from "./components/company/companyApplications";
+import Users from "./components/admin/users";
 import { UserProvider } from "./contexts/UserContext";
 
 function App() {
@@ -29,6 +33,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/changepassword" element={<ChangePassword />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/resetpassword/:token" element={<ResetPassword />} />
           <Route path="/studentprofile" element={<StudentProfile />} />
           <Route path="/institutionprofile" element={<InstitutionProfile />} />
           <Route path="/companyprofile" element={<CompanyProfile />} />
@@ -41,6 +48,7 @@ function App() {
           <Route path="/company/jobs" element={<CompanyJobs />} />
           <Route path="/jobapplications" element={<JobApplications />} />
           <Route path="/company/applications" element={<CompanyApplications />} />
+          <Route path="/admin/users" element={<Users />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
         <Footer />

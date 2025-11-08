@@ -212,3 +212,60 @@ body {
     display: none;
   }
 }
+/* Existing styles remain unchanged above this line */
+
+/* --- Dropdown Menu Enhancements --- */
+.dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: var(--rich-blue);
+  border-radius: 12px;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  z-index: 100;
+  animation: fadeInDropdown 0.25s ease-in-out;
+}
+
+@keyframes fadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown button {
+  background: none;
+  border: none;
+  color: var(--white);
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.dropdown button:hover {
+  background: var(--rich-gold);
+  color: var(--rich-blue);
+  transform: scale(1.03);
+}
+
+/* Optional: Distinguish Logout visually for emphasis */
+.dropdown button:last-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown button:last-child:hover {
+  background: #e63946;
+  color: #fff;
+  transform: scale(1.05);
+}

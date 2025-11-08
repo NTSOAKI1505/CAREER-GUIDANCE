@@ -23,7 +23,7 @@ const roleLinks = {
     { label: "Alumni", path: "/Alumni" },
   ],
   admin: [
-    { label: "Institutions", path: "/admin/institutions" },
+    { label: "Institutions", path: "/institutionapplications" },
     { label: "Companies", path: "/admin/companies" },
     { label: "Users", path: "/admin/users" },
     { label: "Applications", path: "/admin/applications" },
@@ -68,9 +68,10 @@ function Navbar() {
         if (res.ok) {
           const profileData = data.profiles?.[0] || null;
           if (profileData) {
-            const pic = user.role === "student" || user.role === "admin"
-              ? profileData.profilePic || null
-              : profileData.logoUrl || null;
+            const pic =
+              user.role === "student" || user.role === "admin"
+                ? profileData.profilePic || null
+                : profileData.logoUrl || null;
             setProfilePic(pic);
           }
         }
@@ -97,17 +98,18 @@ function Navbar() {
         {!user && (
           <>
             <li><button onClick={() => navigate("/")}>Home</button></li>
-            <li><button onClick={() => navigate("/student")}>student</button></li>
-            <li><button onClick={() => navigate("/institution")}>institution</button></li>
-             <li><button onClick={() => navigate("/company")}>company</button></li>
+            <li><button onClick={() => navigate("/student")}>Student</button></li>
+            <li><button onClick={() => navigate("/institution")}>Institution</button></li>
+            <li><button onClick={() => navigate("/company")}>Company</button></li>
           </>
         )}
 
-        {user && roleLinks[user.role]?.map((link) => (
-          <li key={link.path}>
-            <button onClick={() => navigate(link.path)}>{link.label}</button>
-          </li>
-        ))}
+        {user &&
+          roleLinks[user.role]?.map((link) => (
+            <li key={link.path}>
+              <button onClick={() => navigate(link.path)}>{link.label}</button>
+            </li>
+          ))}
       </ul>
 
       {/* User Profile / Auth */}
@@ -117,23 +119,41 @@ function Navbar() {
             {profilePic ? (
               <img src={profilePic} alt="Profile" className="avatar-img" />
             ) : (
-              <div className="avatar">{user.firstName?.charAt(0)?.toUpperCase()}</div>
+              <div className="avatar">
+                {user.firstName?.charAt(0)?.toUpperCase()}
+              </div>
             )}
             <div className="user-info">
-              <span className="user-name">{user.firstName} {user.lastName}</span>
-              <span className="user-role">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+              <span className="user-name">
+                {user.firstName} {user.lastName}
+              </span>
+              <span className="user-role">
+                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              </span>
             </div>
+
+            {/* Dropdown Menu */}
             {profileOpen && (
               <div className="dropdown">
-                <button onClick={() => {
-                  switch (user.role) {
-                    case "student": navigate("/studentprofile"); break;
-                    case "institution": navigate("/institutionprofile"); break;
-                    case "company": navigate("/companyprofile"); break;
-                    case "admin": navigate("/adminprofile"); break;
-                    default: break;
-                  }
-                }}>Profile</button>
+                <button
+                  onClick={() => {
+                    switch (user.role) {
+                      case "student": navigate("/studentprofile"); break;
+                      case "institution": navigate("/institutionprofile"); break;
+                      case "company": navigate("/companyprofile"); break;
+                      case "admin": navigate("/adminprofile"); break;
+                      default: break;
+                    }
+                  }}
+                >
+                  Profile
+                </button>
+
+                {/* ✅ Added Change Password Button */}
+                <button onClick={() => navigate("/changepassword")}>
+                  Change Password
+                </button>
+
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}
@@ -143,7 +163,9 @@ function Navbar() {
             <button onClick={() => navigate("/login")}>Login</button>
           </div>
         )}
-        <button className="menu-toggle" onClick={toggleMenu}>☰</button>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          ☰
+        </button>
       </div>
     </nav>
   );

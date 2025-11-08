@@ -8,7 +8,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext); // update context after login
+  const { setUser } = useContext(UserContext);
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,9 +31,7 @@ const Login = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      // Save only the token
       localStorage.setItem("token", data.token);
-      // Update context
       setUser(data.user);
 
       navigate("/"); // redirect after login
@@ -68,6 +66,12 @@ const Login = () => {
           required
           disabled={loading}
         />
+
+        {/* ✅ Added Forgot Password Link */}
+        <div className="forgot-password">
+          <Link to="/forgotpassword">Forgot Password?</Link>
+        </div>
+
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
