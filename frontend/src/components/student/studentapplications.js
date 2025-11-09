@@ -4,32 +4,6 @@ import "./studentapplications.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Tips
-const facultyTips = [
-  "Popular program among students",
-  "Good starting point for beginners",
-  "Highly recommended by alumni",
-  "New faculty with emerging courses",
-];
-
-const courseTips = [
-  "Limited seats available",
-  "Beginner-friendly course",
-  "Includes practical hands-on projects",
-  "High demand for job placements",
-];
-
-function getRandomTip(tips) {
-  return tips[Math.floor(Math.random() * tips.length)];
-}
-
-const Tooltip = ({ children, tip }) => (
-  <div className="tooltip-container">
-    {children}
-    {tip && <div className="tooltip-box">{tip}</div>}
-  </div>
-);
-
 export default function Applications() {
   const { user, token } = useContext(UserContext);
 
@@ -37,15 +11,14 @@ export default function Applications() {
   const [toast, setToast] = useState({ message: "", type: "" });
   const [userApplications, setUserApplications] = useState([]);
   const [applicationStatuses, setApplicationStatuses] = useState({});
-
   const [institutions, setInstitutions] = useState([]);
   const [allInstitutionsMap, setAllInstitutionsMap] = useState({});
   const [allFacultiesMap, setAllFacultiesMap] = useState({});
   const [allCoursesMap, setAllCoursesMap] = useState({});
-
   const [expandedIds, setExpandedIds] = useState([]);
   const [expandedFaculties, setExpandedFaculties] = useState({});
-  const [hoverTips, setHoverTips] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
@@ -57,7 +30,7 @@ export default function Applications() {
 
     const fetchData = async () => {
       try {
-        // 1️⃣ Fetch institutions
+        // Institutions
         const instRes = await fetch(`${BACKEND_URL}/institution/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -69,7 +42,7 @@ export default function Applications() {
         instList.forEach((i) => (instMap[i.id] = i));
         setAllInstitutionsMap(instMap);
 
-        // 2️⃣ Fetch faculties concurrently for all institutions
+        // Faculties
         const facultiesResponses = await Promise.all(
           instList.map((inst) =>
             fetch(`${BACKEND_URL}/faculty/institution/${inst.id}`, {
@@ -88,7 +61,7 @@ export default function Applications() {
         });
         setAllFacultiesMap(facultiesMap);
 
-        // 3️⃣ Fetch courses concurrently for all faculties
+        // Courses
         const facultyIds = Object.keys(facultiesMap);
         const coursesResponses = await Promise.all(
           facultyIds.map((fid) =>
@@ -108,7 +81,7 @@ export default function Applications() {
         });
         setAllCoursesMap(coursesMap);
 
-        // 4️⃣ Fetch user applications
+        // User Applications
         const appRes = await fetch(`${BACKEND_URL}/application/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -176,10 +149,17 @@ export default function Applications() {
     }
   };
 
+  const filteredInstitutions = institutions.filter((inst) => {
+    const matchSearch =
+      inst.institutionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inst.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchSearch;
+  });
+
   if (loading)
     return (
       <div className="applications-container">
-        <p>Discovering amazing institutions for you...</p>
+        <p>Loading institutions and programs...</p>
       </div>
     );
 
@@ -194,6 +174,34 @@ export default function Applications() {
     <div className="applications-container">
       {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
 
+      <div className="guidance-box">
+        <h2>Welcome, Future Student!</h2>
+        <p>
+          Explore top institutions across Lesotho and find the program that matches your dream career.  
+          Use the <strong>search bar</strong> below to look for schools or programs.  
+          Click <em>“Explore Programs”</em> to view faculties and courses, then <strong>Apply</strong> directly from here.
+        </p>
+      </div>
+
+      <div className="search-filter-bar">
+        <input
+          type="text"
+          placeholder="Search by institution or program name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        <select
+          className="filter-select"
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+        >
+          <option value="all">All Institutions</option>
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+      </div>
+
       {userApplications.length > 0 && (
         <div className="user-applications">
           <h3>Your Applications</h3>
@@ -202,15 +210,17 @@ export default function Applications() {
               const course = allCoursesMap[app.courseId];
               const faculty = course ? allFacultiesMap[course.facultyId] : null;
               const institution = faculty ? allInstitutionsMap[faculty.institutionId] : null;
-
               const institutionName = institution?.institutionName || "Unknown Institution";
               const facultyName = faculty?.facultyName || "Unknown Faculty";
               const courseName = course?.courseName || "Unknown Course";
-              const appliedDate = app.applicationDate ? new Date(app.applicationDate._seconds * 1000).toLocaleDateString() : "N/A";
+              const appliedDate = app.applicationDate
+                ? new Date(app.applicationDate._seconds * 1000).toLocaleDateString()
+                : "N/A";
 
               return (
                 <li key={app.id}>
-                  <strong>{institutionName}</strong> → {facultyName} → {courseName} | Status: {app.status} | Applied on: {appliedDate}
+                  <strong>{institutionName}</strong> → {facultyName} → {courseName} | Status:{" "}
+                  <span className={`status ${app.status.toLowerCase()}`}>{app.status}</span> | Applied on: {appliedDate}
                 </li>
               );
             })}
@@ -220,9 +230,13 @@ export default function Applications() {
 
       <h1 className="page-title">Find Your Perfect Program</h1>
       <div className="institutions-grid">
-        {institutions.map((inst) => (
+        {filteredInstitutions.map((inst) => (
           <div key={inst.id} className="institution-card">
-            <img src={inst.logoUrl || "/placeholders/institution.png"} alt={`${inst.institutionName} logo`} className="card-icon" />
+            <img
+              src={inst.logoUrl || "/placeholders/institution.png"}
+              alt={`${inst.institutionName} logo`}
+              className="card-icon"
+            />
             <h3>{inst.institutionName}</h3>
             <p>{inst.description || "No description yet. Explore the programs below!"}</p>
             <button className="expand-btn" onClick={() => toggleInstitution(inst.id)}>
@@ -233,47 +247,35 @@ export default function Applications() {
               Object.values(allFacultiesMap)
                 .filter((f) => f.institutionId === inst.id)
                 .map((faculty) => (
-                  <Tooltip key={faculty.id} tip={hoverTips[faculty.id]}>
-                    <div
-                      className="faculty-card"
-                      onMouseEnter={() => setHoverTips((prev) => ({ ...prev, [faculty.id]: getRandomTip(facultyTips) }))}
-                      onMouseLeave={() => setHoverTips((prev) => ({ ...prev, [faculty.id]: null }))}
-                    >
-                      <h4>{faculty.facultyName}</h4>
-                      <p>{faculty.description || "Explore courses offered by this faculty!"}</p>
-                      <p>Dean: {faculty.deanName || "Not assigned yet"}</p>
-                      <button className="expand-btn" onClick={() => toggleFaculty(faculty.id)}>
-                        {expandedFaculties[faculty.id] ? "▲ Hide Courses" : "▼ Courses"}
-                      </button>
+                  <div key={faculty.id} className="faculty-card">
+                    <h4>{faculty.facultyName}</h4>
+                    <p>{faculty.description || "Explore courses offered by this faculty!"}</p>
+                    <p>Dean: {faculty.deanName || "Not assigned yet"}</p>
+                    <button className="expand-btn" onClick={() => toggleFaculty(faculty.id)}>
+                      {expandedFaculties[faculty.id] ? "▲ Hide Courses" : "▼ View Courses"}
+                    </button>
 
-                      {expandedFaculties[faculty.id] &&
-                        Object.values(allCoursesMap)
-                          .filter((c) => c.facultyId === faculty.id)
-                          .map((course) => (
-                            <Tooltip key={course.id} tip={hoverTips[course.id]}>
-                              <div
-                                className="course-card"
-                                onMouseEnter={() => setHoverTips((prev) => ({ ...prev, [course.id]: getRandomTip(courseTips) }))}
-                                onMouseLeave={() => setHoverTips((prev) => ({ ...prev, [course.id]: null }))}
-                              >
-                                <h5>{course.courseName}</h5>
-                                <p>
-                                  {course.courseCode || "Code N/A"} | 🎓 {course.credits || "TBD"} Credits | ⏱️{" "}
-                                  {course.duration || "TBD"}
-                                </p>
-                                <p>{course.description || "No description available. Apply to see full details!"}</p>
-                                <button
-                                  className={`apply-btn ${applicationStatuses[course.id]?.toLowerCase() || ""}`}
-                                  onClick={() => applyToCourse(course.id)}
-                                  disabled={!!applicationStatuses[course.id]}
-                                >
-                                  {applicationStatuses[course.id] || "Apply Now"}
-                                </button>
-                              </div>
-                            </Tooltip>
-                          ))}
-                    </div>
-                  </Tooltip>
+                    {expandedFaculties[faculty.id] &&
+                      Object.values(allCoursesMap)
+                        .filter((c) => c.facultyId === faculty.id)
+                        .map((course) => (
+                          <div key={course.id} className="course-card">
+                            <h5>{course.courseName}</h5>
+                            <p>
+                              {course.courseCode || "Code N/A"} | {course.credits || "TBD"} Credits |{" "}
+                              {course.duration || "TBD"}
+                            </p>
+                            <p>{course.description || "No description available."}</p>
+                            <button
+                              className={`apply-btn ${applicationStatuses[course.id]?.toLowerCase() || ""}`}
+                              onClick={() => applyToCourse(course.id)}
+                              disabled={!!applicationStatuses[course.id]}
+                            >
+                              {applicationStatuses[course.id] || "Apply Now"}
+                            </button>
+                          </div>
+                        ))}
+                  </div>
                 ))}
           </div>
         ))}
