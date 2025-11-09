@@ -11,8 +11,9 @@ C:\Users\SMART TECH HUB>curl -X PATCH http://localhost:5000/api/auth/change-pass
 {"status":"success","message":"Password updated successfully"}
 C:\Users\SMART TECH HUB>
 C:\Users\SMART TECH HUB>
+C:\Users\SMART TECH HUB>
 C:\Users\SMART TECH HUB>curl -X POST http://localhost:5000/api/auth/forgot-password -H "Content-Type: application/json" -d "{\"email\":\"ntsoakikasa@gmail.com\"}"
-{"status":"success","message":"Token generated. Use this token to reset password.","resetToken":"c21ad586359ce9fbe9c27c7e2cf8ba986bfbcd8a5c97bb9ee8d1ac2e5152a85e","resetURL":"http://localhost:5000/reset-password/c21ad586359ce9fbe9c27c7e2cf8ba986bfbcd8a5c97bb9ee8d1ac2e5152a85e"}
+{"status":"success","message":"Reset link sent successfully to ntsoakikasa@gmail.com"}
 C:\Users\SMART TECH HUB>
 C:\Users\SMART TECH HUB>
 C:\Users\SMART TECH HUB>curl -X PATCH http://localhost:5000/api/auth/reset-password -H "Content-Type: application/json" -d "{\"token\":\"5a5a32c9a78cb0042c3492a066fec497e6c5f4307423008b46c0be06a7b584c8\",\"newPassword\":\"Lnna@123456\",\"newPasswordConfirm\":\"Lnna@123456\"}"

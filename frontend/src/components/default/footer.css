@@ -1,42 +1,38 @@
-/* Make the page layout flexible to push footer down */
+/* 1. Ensure html and body take full height */
 html, body {
   height: 100%;
   margin: 0;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Ensure app content takes remaining space above footer */
+/* 2. Root container: flex column layout */
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* full viewport height */
 }
 
-/* Main content area should grow and push footer down */
+/* 3. Main content grows to push footer down */
 main {
-  flex: 1;
+  flex: 1 0 auto; /* flex-grow:1, flex-shrink:0, flex-basis:auto */
 }
 
-/* Footer styles with rich blue → rich gold gradient and rounded edges */
+/* 4. Footer always at the bottom */
 .footer {
-  background: linear-gradient(90deg, #0a1f44, #1a3a6e, #ffd700); /* dark blue → mid blue → gold */
+  background: linear-gradient(90deg, #0a1f44, #1a3a6e, #ffd700);
   color: white;
   text-align: center;
   padding: 20px 0;
-  margin-top: auto;
-  border-radius: 10px; /* rounded edges */
-  margin-left: 0px;   /* optional spacing so rounding is visible */
-  margin-right: 0px;  /* optional spacing so rounding is visible */
+  border-radius: 10px;
+  flex-shrink: 0; /* ensure it never shrinks */
 }
 
-/* Footer links */
+/* 5. Footer links styling */
 .footer-links {
   margin-top: 10px;
 }
 
 .footer-links a {
-  color: white; /* rich gold for links */
+  color: #ffd700; /* rich gold */
   text-decoration: none;
   margin: 0 10px;
   font-weight: 500;

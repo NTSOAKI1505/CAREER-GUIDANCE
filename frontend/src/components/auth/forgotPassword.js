@@ -1,39 +1,58 @@
-// src/components/ForgotPassword.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./login.css"; // Reuse your login styles
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+import "./login.css"; // Reuse login styles
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [backendUrl, setBackendUrl] = useState("");
+
+  // ✅ Ensure backend URL is defined
+  useEffect(() => {
+    if (!process.env.REACT_APP_BACKEND_URL) {
+      console.error("REACT_APP_BACKEND_URL is not defined in .env");
+      setError("Backend URL not configured. Contact admin.");
+    } else {
+      setBackendUrl(process.env.REACT_APP_BACKEND_URL);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+
+    if (!backendUrl) return; // Stop if backend URL is missing
+
     setLoading(true);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/auth/forgot-password`, {
+      const res = await fetch(`${backendUrl}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim() }),
       });
-      const data = await res.json();
 
-      if (data.status !== "success") throw new Error(data.message || "Error sending reset email");
+      // Parse JSON safely
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Invalid server response: ${res.status}`);
+      }
 
-      // Show success message from backend
-      setMessage(data.message);
+      if (!res.ok || data.status !== "success") {
+        throw new Error(data.message || `Server error: ${res.status}`);
+      }
 
-      // Optional: log the reset token in console for testing
-      if (data.resetToken) console.log("Reset token (for testing):", data.resetToken);
+      setMessage(data.message || "Reset link sent successfully");
+      console.log("Reset token (for testing):", data.resetToken);
+
     } catch (err) {
-      setError(err.message);
+      console.error("Forgot Password Error:", err);
+      setError(err.message || "Server error");
     } finally {
       setLoading(false);
     }
@@ -51,12 +70,15 @@ const ForgotPassword = () => {
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError("");
+            setMessage("");
+          }}
           required
           disabled={loading}
         />
-
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || !backendUrl}>
           {loading ? "Sending..." : "Send Reset Link"}
         </button>
       </form>

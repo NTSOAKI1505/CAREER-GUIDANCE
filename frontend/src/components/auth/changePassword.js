@@ -1,36 +1,61 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
-import "./login.css"; // Reuse login styles
+import "./login.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ChangePassword = () => {
   const navigate = useNavigate();
-  const { token, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
     newPasswordConfirm: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  const [status, setStatus] = useState({ error: "", success: "" });
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState("");
+
+  // ✅ Grab token from localStorage on component mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      setStatus({ error: "You are not logged in", success: "" });
+      // Redirect to login after 1.5s
+      setTimeout(() => navigate("/login"), 1500);
+    } else {
+      setToken(storedToken);
+    }
+  }, [navigate]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
+    setStatus({ error: "", success: "" });
 
-    if (form.newPassword !== form.newPasswordConfirm) {
-      setError("New passwords do not match");
-      setLoading(false);
+    const { currentPassword, newPassword, newPasswordConfirm } = form;
+
+    // Validation
+    if (!currentPassword || !newPassword || !newPasswordConfirm) {
+      setStatus({ error: "All fields are required", success: "" });
       return;
     }
+    if (newPassword !== newPasswordConfirm) {
+      setStatus({ error: "New passwords do not match", success: "" });
+      return;
+    }
+
+    if (!token) {
+      setStatus({ error: "Token missing or expired. Please log in again.", success: "" });
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetch(`${BACKEND_URL}/auth/change-password`, {
@@ -39,18 +64,17 @@ const ChangePassword = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ currentPassword, newPassword, newPasswordConfirm }),
       });
 
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Password change failed");
 
-      // Show success message
-      setSuccess("Password updated successfully");
+      setStatus({ success: "Password updated successfully!", error: "" });
       setForm({ currentPassword: "", newPassword: "", newPasswordConfirm: "" });
 
-      // ✅ Auto logout after 2 seconds for security
+      // Auto logout after 2 seconds
       setTimeout(() => {
         localStorage.removeItem("token");
         setUser(null);
@@ -58,7 +82,7 @@ const ChangePassword = () => {
         window.location.reload();
       }, 2000);
     } catch (err) {
-      setError(err.message);
+      setStatus({ error: err.message, success: "" });
       console.error(err);
     } finally {
       setLoading(false);
@@ -69,11 +93,8 @@ const ChangePassword = () => {
     <div className="login-container">
       <h1>Change Password</h1>
 
-      {/* Error Message */}
-      {error && <p className="error">{error}</p>}
-
-      {/* Success Message (green) */}
-      {success && <p className="success-message">{success}</p>}
+      {status.error && <p className="error">{status.error}</p>}
+      {status.success && <p className="success-message">{status.success}</p>}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -83,7 +104,7 @@ const ChangePassword = () => {
           value={form.currentPassword}
           onChange={handleChange}
           required
-          disabled={loading}
+          disabled={loading || !token}
         />
         <input
           type="password"
@@ -92,7 +113,7 @@ const ChangePassword = () => {
           value={form.newPassword}
           onChange={handleChange}
           required
-          disabled={loading}
+          disabled={loading || !token}
         />
         <input
           type="password"
@@ -101,9 +122,9 @@ const ChangePassword = () => {
           value={form.newPasswordConfirm}
           onChange={handleChange}
           required
-          disabled={loading}
+          disabled={loading || !token}
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || !token}>
           {loading ? "Updating..." : "Update Password"}
         </button>
       </form>
