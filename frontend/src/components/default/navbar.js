@@ -16,6 +16,7 @@ const roleLinks = {
     { label: "Applications", path: "/institutionapplications" },
     { label: "Admissions", path: "/institutionadmissions" },
     { label: "Jobs", path: "/jobapplications" },
+     { label: "perspectivestudents", path: "/institution/perspectivestudents" },
   ],
   company: [
     { label: "Post Jobs", path: "/company/jobs" },
