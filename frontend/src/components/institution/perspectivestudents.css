@@ -1,0 +1,40 @@
+.students-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.students-table th,
+.students-table td {
+  border: 1px solid rgba(7, 16, 62, 0.543);
+  padding: 8px;
+  text-align: left;
+}
+
+.students-table th {
+  background-color: rgba(7, 16, 62, 0.543);
+}
+
+.students-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.students-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-profile-pic {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}

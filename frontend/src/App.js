@@ -21,6 +21,7 @@ import StudentAdmissions from "./components/student/studentadmissions";
 import CompanyJobs from  "./components/company/companyjobs";
 import JobApplications from "./components/student/jobapplications";
 import CompanyApplications from "./components/company/companyApplications";
+import PerspectiveStudents from "./components/institution/perspectivestudents";
 import Users from "./components/admin/users";
 import { UserProvider } from "./contexts/UserContext";
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/company/jobs" element={<CompanyJobs />} />
           <Route path="/jobapplications" element={<JobApplications />} />
           <Route path="/company/applications" element={<CompanyApplications />} />
+          <Route path="/institution/perspectivestudents" element={<PerspectiveStudents />} />
           <Route path="/admin/users" element={<Users />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
