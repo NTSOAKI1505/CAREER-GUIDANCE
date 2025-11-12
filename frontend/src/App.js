@@ -13,6 +13,7 @@ import StudentProfile from "./components/student/studentprofile";
 import InstitutionProfile from "./components/institution/institutionprofile";
 import CompanyProfile from "./components/company/companyprofile";
 import AdminProfile from "./components/admin/adminprofile";
+import ManageInstitutions from "./components/admin/ManageInstitutions";
 import InstitutionFaculty from "./components/institution/InstitutionFaculty";
 import StudentApplications from "./components/student/studentapplications";
 import InstitutionApplications from "./components/institution/institutionApplications";
@@ -51,6 +52,7 @@ function App() {
           <Route path="/company/applications" element={<CompanyApplications />} />
           <Route path="/institution/perspectivestudents" element={<PerspectiveStudents />} />
           <Route path="/admin/users" element={<Users />} />
+          <Route path="/admin/manageinstitutions" element={<ManageInstitutions />} />
           {/* Add other routes here (admin, student, institute, company) */}
         </Routes>
         <Footer />

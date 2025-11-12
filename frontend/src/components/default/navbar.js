@@ -16,7 +16,7 @@ const roleLinks = {
     { label: "Applications", path: "/institutionapplications" },
     { label: "Admissions", path: "/institutionadmissions" },
     { label: "Jobs", path: "/jobapplications" },
-     { label: "perspectivestudents", path: "/institution/perspectivestudents" },
+    { label: "Perspective Students", path: "/institution/perspectivestudents" },
   ],
   company: [
     { label: "Post Jobs", path: "/company/jobs" },
@@ -24,7 +24,7 @@ const roleLinks = {
     { label: "Alumni", path: "/Alumni" },
   ],
   admin: [
-    { label: "Institutions", path: "/institutionapplications" },
+    { label: "Institutions", path: "/admin/manageinstitutions" },
     { label: "Companies", path: "/admin/companies" },
     { label: "Users", path: "/admin/users" },
     { label: "Applications", path: "/admin/applications" },
@@ -96,9 +96,11 @@ function Navbar() {
 
       {/* Links */}
       <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        {/* ✅ Home visible to all */}
+        <li><button onClick={() => navigate("/")}>Home</button></li>
+
         {!user && (
           <>
-            <li><button onClick={() => navigate("/")}>Home</button></li>
             <li><button onClick={() => navigate("/student")}>Student</button></li>
             <li><button onClick={() => navigate("/institution")}>Institution</button></li>
             <li><button onClick={() => navigate("/company")}>Company</button></li>
@@ -133,7 +135,6 @@ function Navbar() {
               </span>
             </div>
 
-            {/* Dropdown Menu */}
             {profileOpen && (
               <div className="dropdown">
                 <button
@@ -149,12 +150,9 @@ function Navbar() {
                 >
                   Profile
                 </button>
-
-                {/* ✅ Added Change Password Button */}
                 <button onClick={() => navigate("/changepassword")}>
                   Change Password
                 </button>
-
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}
